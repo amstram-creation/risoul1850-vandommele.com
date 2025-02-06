@@ -31,23 +31,40 @@ export default class ReservationSheet {
   }
 
   extractReservationDates(jsonData) {
+    console.log(jsonData);
     const dateSet = new Set();
     jsonData.forEach((row) => {
-      if (row.c && row.c[0] && row.c[0].v) {
-        const dateMatch = row.c[0].v.match(/Date\((\d+),(\d+),(\d+)\)/);
+      console.log(row);
+      if (
+        row.c &&
+        row.c[0] &&
+        row.c[0].v &&
+        row.c[row.c.length - 1] &&
+        row.c[row.c.length - 1].v
+      ) {
+        const dateMatch = row.c[0].v.match(/Date\((\d+),(\d+),(\d+).+\)/);
+        console.log(dateMatch);
         if (dateMatch) {
           const year = dateMatch[1];
           const month = dateMatch[2];
           const day = dateMatch[3];
-          const formattedDate = `${year}-${String(Number(month) + 1).padStart(
+          const ISODate = `${year}-${String(Number(month) + 1).padStart(
             2,
             '0'
           )}-${String(day).padStart(2, '0')}`;
-          dateSet.add(formattedDate);
+          dateSet.add(ISODate);
         }
       }
     });
+    console.log(dateSet);
     return dateSet;
+  }
+
+  formatDateToISO(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   displayReservations(reservations) {
@@ -66,9 +83,9 @@ export default class ReservationSheet {
     });
 
     for (let i = 0; i < numWeeks; i++) {
-      let formattedDate = currentDate.toISOString().split('T')[0];
+      let ISODate = this.formatDateToISO(currentDate);
       let frenchDate = `Semaine du ${formatter.format(currentDate)}`;
-      let price = this.isHighSeason(formattedDate) ? '1370 €' : '830 €';
+      let price = this.isHighSeason(ISODate) ? '1370 €' : '830 €';
 
       const row = document.createElement('tr');
 
@@ -81,22 +98,18 @@ export default class ReservationSheet {
       row.appendChild(cell);
 
       cell = document.createElement('td');
-      if (reservations.has(formattedDate)) {
+      if (reservations.has(ISODate)) {
         cell.textContent = 'Réservé';
         cell.classList.add('booked');
       } else {
-        const bookButton = document.createElement('button');
-        bookButton.textContent = 'Réserver';
-        bookButton.classList.add('book-now');
-        bookButton.dataset.date = formattedDate;
-        bookButton.addEventListener(
-          'click',
-          this.handleBookingClick.bind(this)
-        );
-        cell.appendChild(bookButton);
+        const bookingLink = document.createElement('a');
+        bookingLink.textContent = 'Réserver';
+        bookingLink.href = `https://docs.google.com/forms/d/e/1FAIpQLSebwzkX2anwJ9q6-gAXvaNPkkjKquUhx-tEutfoHXmfUEjTFA/viewform?usp=pp_url&entry.753458274=${ISODate}`;
+        bookingLink.target = '_blank';
+        bookingLink.classList.add('book-now');
+        cell.appendChild(bookingLink);
       }
       row.appendChild(cell);
-
       tbody.appendChild(row);
       currentDate.setDate(currentDate.getDate() + 7);
     }
@@ -105,7 +118,6 @@ export default class ReservationSheet {
   handleBookingClick(event) {
     const date = event.target.dataset.date;
     alert(`Vous avez choisi de réserver la semaine du ${date}`);
-    // Redirect to booking form or open a modal here
   }
 
   isHighSeason(dateString) {
