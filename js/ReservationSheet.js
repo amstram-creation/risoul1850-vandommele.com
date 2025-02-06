@@ -17,7 +17,7 @@ export default class ReservationSheet {
   }
 
   extractJSONFromSheetsResponse(responseText) {
-    const regex = /\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/s; // Matches the first balanced JSON object
+    const regex = /\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/s;
     const match = responseText.match(regex);
 
     if (match && match[0]) {
@@ -37,7 +37,7 @@ export default class ReservationSheet {
         const dateMatch = row.c[0].v.match(/Date\((\d+),(\d+),(\d+)\)/);
         if (dateMatch) {
           const year = dateMatch[1];
-          const month = dateMatch[2]; // 0-based month in JavaScript
+          const month = dateMatch[2];
           const day = dateMatch[3];
           const formattedDate = `${year}-${String(Number(month) + 1).padStart(
             2,
@@ -52,16 +52,14 @@ export default class ReservationSheet {
 
   displayReservations(reservations) {
     const tbody = document.querySelector('#calendar-container table tbody');
-    tbody.innerHTML = ''; // Clear previous content
+    tbody.innerHTML = '';
 
     let currentDate = new Date();
-
-    // Move to the next Saturday if today is not Saturday
     if (currentDate.getDay() !== 6) {
       currentDate.setDate(currentDate.getDate() + (6 - currentDate.getDay()));
     }
 
-    const numWeeks = 12; // Show 12 weeks
+    const numWeeks = 12;
     const formatter = new Intl.DateTimeFormat('fr-FR', {
       day: 'numeric',
       month: 'long',
@@ -87,19 +85,32 @@ export default class ReservationSheet {
         cell.textContent = 'Réservé';
         cell.classList.add('booked');
       } else {
-        cell.textContent = 'Disponible';
+        const bookButton = document.createElement('button');
+        bookButton.textContent = 'Réserver';
+        bookButton.classList.add('book-now');
+        bookButton.dataset.date = formattedDate;
+        bookButton.addEventListener(
+          'click',
+          this.handleBookingClick.bind(this)
+        );
+        cell.appendChild(bookButton);
       }
       row.appendChild(cell);
 
       tbody.appendChild(row);
-      currentDate.setDate(currentDate.getDate() + 7); // Move to the next Saturday
+      currentDate.setDate(currentDate.getDate() + 7);
     }
+  }
+
+  handleBookingClick(event) {
+    const date = event.target.dataset.date;
+    alert(`Vous avez choisi de réserver la semaine du ${date}`);
+    // Redirect to booking form or open a modal here
   }
 
   isHighSeason(dateString) {
     const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // JS months are 0-based
+    const month = date.getMonth() + 1;
     const day = date.getDate();
 
     if ((month === 12 && day >= 20) || (month === 1 && day <= 7)) return true;
@@ -111,4 +122,3 @@ export default class ReservationSheet {
     return false;
   }
 }
-
