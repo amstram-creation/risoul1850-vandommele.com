@@ -206,3 +206,70 @@ main>section>h2 {
         transform: rotate(1turn)
     }
 }
+
+
+
+.booking-container {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.booking-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    align-items: center;
+    justify-content: center;
+}
+
+.week {
+    grid-column: 1 / span 2;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.price {
+    color: #333;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.book-now{
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.book-now:hover {
+    background-color: #0056b3;
+}
+
+@media (min-width: 500px) {
+    .booking-item {
+        grid-template-columns: 2fr 1fr 1fr;
+        align-items: center;
+    }
+
+    .week {
+        grid-column: 1;
+    }
+
+    .price {
+        grid-column: 2;
+        text-align: center;
+    }
+
+    .book-now {
+        grid-column: 3;
+        justify-self: end;
+    }
+}
