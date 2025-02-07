@@ -34,15 +34,36 @@
 <body>
     <header class="hero">
         <div class="hero__video-container">
-            <!-- Vidéo pour desktop -->
-            <video class="hero__video desktop" autoplay loop muted playsinline>
-                <source src="./assets/hero/Hero section desktop.mp4" type="video/mp4">
-            </video>
+            <script>
+                function loadVideo() {
+                    const videoContainer = document.querySelector('.hero__video-container');
+                    if (videoContainer) {
+                        videoContainer.innerHTML = '';
 
-            <!-- Vidéo pour mobile -->
-            <video class="hero__video mobile" autoplay loop muted playsinline>^
-                <source src="./assets/hero/Hero section mobile.mp4" type="video/mp4">
-            </video>
+                        const video = document.createElement('video');
+                        video.classList.add('hero__video', window.innerWidth > 768 ? 'desktop' : 'mobile');
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.muted = true;
+                        video.playsInline = true;
+
+                        const source = document.createElement('source');
+                        source.src = window.innerWidth > 768
+                            ? './assets/video/hero_desktop.mp4'
+                            : './assets/video/hero_mobile.mp4';
+                        source.type = 'video/mp4';
+
+                        video.appendChild(source);
+                        videoContainer.appendChild(video);
+                    }
+                }
+
+                // Load the video on page load
+                window.addEventListener('load', loadVideo);
+                // Reload the video when resizing the window
+                window.addEventListener('resize', loadVideo);
+
+            </script>
 
 
             <!-- Menu Burger -->
@@ -196,11 +217,13 @@
             <h2 class="section-title">Réservez votre séjour en quelques clics</h2>
             <div class="reservation-container">
                 <header class="reservation-header">
-                    <p class="section-subtitle">Attention, les tarifs varient en fonction de la saison. Découvrez notre liste de prix ci dessous, et contactez le
-                    propriétaire via le formulaire au bas de la page.</p>
-                    
-                    <p>Le prix de la location comprend un emplacement de garage couvert dans le résidence Deneb, Stationnement n° 14, à 50m de
-                    l’appartement.</p>
+                    <p class="section-subtitle">Attention, les tarifs varient en fonction de la saison. Découvrez notre
+                        liste de prix ci dessous, et contactez le
+                        propriétaire via le formulaire au bas de la page.</p>
+
+                    <p>Le prix de la location comprend un emplacement de garage couvert dans le résidence Deneb,
+                        Stationnement n° 14, à 50m de
+                        l’appartement.</p>
                 </header>
 
 
@@ -461,18 +484,18 @@
 
     <script type="module">
         //
-    import ReservationTable from './js/ReservationSheet.js';
-    import MobileNav from './js/MobileNav.js';
-    // Example usage
-    const reservationTable = new ReservationTable(
-        '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE',
-        'reservation_dates'
-    );
-    // Initialize the MobileNav component when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', () => {
-        reservationTable.fetchReservations();
-        new MobileNav();
-    });
+        import ReservationTable from './js/ReservationSheet.js';
+        import MobileNav from './js/MobileNav.js';
+        // Example usage
+        const reservationTable = new ReservationTable(
+            '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE',
+            'reservation_dates'
+        );
+        // Initialize the MobileNav component when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            reservationTable.fetchReservations();
+            new MobileNav();
+        });
 
     </script>
 </body>
