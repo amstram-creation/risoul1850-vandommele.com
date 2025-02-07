@@ -1,43 +1,19 @@
-
-
-.hero {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
 .hero__video-container {
     position: relative;
     width: 100%;
-    height: 85vh;
     overflow: hidden;
 }
 
 .hero__video {
     width: 100%;
     height: 100%;
+    max-height: 100vh;
     object-fit: cover;
-    background-color: rgba(255, 255, 255, 0.2); /* Couleur semi-transparente */
-    backdrop-filter: blur(10px); /* Applique un flou */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Couleur semi-transparente */
+    backdrop-filter: blur(10px);
+    /* Applique un flou */
 }
-
-
-
-
-/* Quand la largeur de l'écran est petite (mobile), on affiche la vidéo mobile et cache la vidéo desktop */
-@media (max-width: 768px) {
-    .hero__video.desktop {
-        display: none;
-    }
-
-    .hero__video.mobile {
-        display: block;
-    }
-}
-
-
 
 
 .nav-buttons {
@@ -67,15 +43,16 @@
     position: relative;
     overflow: hidden;
     border: 2px solid transparent;
-    
+
     /* Transition plus fluide */
-    transition: transform 0.3s ease-out, background 0.3s ease-out, 
-                color 0.3s ease-out, box-shadow 0.3s ease-out;
+    transition: transform 0.3s ease-out, background 0.3s ease-out,
+        color 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
 /* Effet de hover */
 .nav-button:hover {
-    transform: translateY(-8px); /* Moins de déplacement pour éviter l’instabilité */
+    transform: translateY(-8px);
+    /* Moins de déplacement pour éviter l’instabilité */
     background: rgba(255, 255, 255, 0.9);
     color: rgba(73, 175, 205, 1);
     border-color: rgba(73, 175, 205, 1);
@@ -101,7 +78,8 @@
 /* Animation du texte */
 .nav-button:hover {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
-    letter-spacing: 1px; /* Moins d’espace pour éviter un effet trop brusque */
+    letter-spacing: 1px;
+    /* Moins d’espace pour éviter un effet trop brusque */
 }
 
 .welcome-container {
@@ -131,29 +109,26 @@
 
 
 @media (max-width: 768px) {
-    .hero__video-container {
-        height: 75vh;
-    }
 
 
-    .welcome-texth1 {
-        font-size: 4em;
-        padding: 0 1rem;
-        text-align: center;
-    }
+.welcome-text h1 {
+    font-size: 4em;
+    padding: 0 1rem;
+    text-align: center;
+}
 
 
-    .welcome-texth2 {
-        font-size: 2em;
-        padding: 0 1rem;
-        text-align: center;
-    }
+.welcome-text h2 {
+    font-size: 2em;
+    padding: 0 1rem;
+    text-align: center;
+}
 
-    .welcome-texth3 {
-        font-size: 1.2em;
-        padding:  1rem;
-        text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
-    }
+.welcome-text h3 {
+    font-size: 1.2em;
+    padding: 1rem;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
 
 
 }
@@ -165,12 +140,11 @@
 
 
 /*=======================================================*/
-/* Menu Burger mobile */ 
+/* Menu Burger mobile */
 /*====================================================*/
 
 /* Menu mobile */
 .burger-menu {
-    display: none;
     position: fixed;
     top: 20px;
     right: 20px;
@@ -213,7 +187,8 @@
 .nav-overlay.active {
     opacity: 1;
     visibility: visible;
-    pointer-events: auto; /* Réactive les événements quand visible */
+    pointer-events: auto;
+    /* Réactive les événements quand visible */
 }
 
 @media (max-width: 768px) {
@@ -303,7 +278,7 @@
 
 
 /*=======================================================*/
-/* Acceuil */ 
+/* Acceuil */
 /*====================================================*/
 
 .section-accueil {
@@ -327,22 +302,7 @@
     gap: 2rem;
 }
 
-.text-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
 
-.text-content p {
-    font-size: 1.1em;
-    line-height: 1.6;
-    color: #333;
-}
-
-.intro-text p {
-    font-size: 1.2em;
-    color: #1a1a1a;
-}
 
 .access-info {
     background: rgba(73, 175, 205, 0.1);
@@ -400,14 +360,16 @@
     transition: all 0.3s ease;
     margin: 1rem auto;
     box-shadow: 0 4px 15px rgba(73, 175, 205, 0.3);
-    z-index: 1001; /* Supérieur au z-index de la navigation mobile */
+    z-index: 1001;
+    /* Supérieur au z-index de la navigation mobile */
 }
 
 .cta-button:hover {
     background: rgba(73, 175, 205, 1);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(73, 175, 205, 0.4);
-    z-index: 1001; /* Supérieur au z-index de la navigation mobile */
+    z-index: 1001;
+    /* Supérieur au z-index de la navigation mobile */
 }
 
 /* Media Queries pour les plus grands écrans */
@@ -442,16 +404,12 @@
     .section-title {
         font-size: 3em;
     }
-
-    .text-content p {
-        font-size: 1.2em;
-    }
 }
 
 
 
 /*=======================================================*/
-/* Gallerie */ 
+/* Gallerie */
 /*====================================================*/
 
 
@@ -467,10 +425,12 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    background-color: rgba(255, 0, 0, 0.7); /* Rouge semi-transparent */
+    background-color: rgba(255, 0, 0, 0.7);
+    /* Rouge semi-transparent */
     border-radius: 50%;
     cursor: pointer;
-    transform: translate(-50%, -50%); /* Centrer sur la zone */
+    transform: translate(-50%, -50%);
+    /* Centrer sur la zone */
     transition: background 0.3s;
 }
 
@@ -485,12 +445,7 @@
 
 
 /* Styles pour la section appartement */
-.floor-plans {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding: 1rem;
-}
+
 
 .floor-plan {
     background: white;
@@ -584,11 +539,6 @@ area[coords] {
 
 /* Responsive design */
 @media (min-width: 768px) {
-    .floor-plans {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
     .floor-plan {
         flex: 1 1 calc(50% - 2rem);
     }
@@ -610,9 +560,12 @@ area[coords] {
 
 
 iframe {
-    width: 100%;  /* Largeur adaptable à son conteneur */
-    height: 500px; /* Hauteur fixe */
-    border: none; /* Supprime la bordure par défaut */
+    width: 100%;
+    /* Largeur adaptable à son conteneur */
+    height: 500px;
+    /* Hauteur fixe */
+    border: none;
+    /* Supprime la bordure par défaut */
 }
 
 
@@ -700,7 +653,7 @@ iframe {
 
 
 /*=======================================================*/
-/* Reservation */ 
+/* Reservation */
 /*====================================================*/
 
 .main-section#reservations {
@@ -710,43 +663,15 @@ iframe {
     background: rgba(255, 255, 255, 0.95);
 }
 
-.reservation-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    position: relative;
-    z-index: 1000;
-}
 
 .reservation-header {
     text-align: center;
     margin-bottom: 2rem;
 }
 
-
-
-#my-cal-inline {
-    width: 100%;
-    min-height: 600px !important;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    background: white;
-    padding: 1rem;
-    margin: 2rem auto;
-    position: relative;
-    z-index: 2000;
-}
-
 /* Assurez-vous que le calendrier est visible sur mobile */
 @media (max-width: 768px) {
-    #my-cal-inline {
-        min-height: 500px !important;
-        padding: 0.5rem;
-    }
-    
+
     .calendar-container {
         min-height: 500px;
     }
@@ -810,7 +735,7 @@ iframe {
         height: 500px;
         padding: 0.5rem;
     }
-    
+
     .main-section#reservations {
         padding: 1rem;
     }
@@ -842,7 +767,7 @@ iframe {
     .pricing-section {
         padding: 0 0.5rem;
     }
-    
+
     .pricing-title {
         font-size: 1.75em;
     }
@@ -851,16 +776,10 @@ iframe {
 
 
 /*=======================================================*/
-/* Activités */ 
+/* Activités */
 /*====================================================*/
 
-.section-title {
-    font-size: 1.8em;
-    color: #333;
-    text-align: center;
-    margin-bottom: 0.5rem;
-    line-height: 1.3;
-}
+
 
 .section-subtitle {
     text-align: center;
@@ -980,7 +899,7 @@ iframe {
 
 
 /*=======================================================*/
-/* Reviews */ 
+/* Reviews */
 /*====================================================*/
 
 
@@ -1158,7 +1077,7 @@ iframe {
 
 
 /*=======================================================*/
-/* Footer */ 
+/* Footer */
 /*====================================================*/
 
 .footer {
@@ -1275,7 +1194,8 @@ iframe {
     }
 
     .footer__logo {
-        order: -1; /* Place le logo à gauche sur desktop */
+        order: -1;
+        /* Place le logo à gauche sur desktop */
     }
 
     .footer__tagline {
