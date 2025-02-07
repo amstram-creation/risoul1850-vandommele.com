@@ -131,7 +131,8 @@
                 </div>
 
                 <div class="image-container">
-                    <img src="./assets/images/section_gallerie/hiver.jpg" alt="Vue de la Résidence Pégase" class="main-image">
+                    <img src="./assets/images/section_gallerie/hiver.jpg" alt="Vue de la Résidence Pégase"
+                        class="main-image">
                 </div>
 
                 <a href="#reservation" class="cta-button">Réserver maintenant</a>
@@ -151,19 +152,23 @@
                         <img src="./assets/images/plan/floor_1.webp" usemap="#image-map-ground" class="plan-image"
                             alt="Plan du premier étage">
                         <map name="image-map-ground">
-                            <area target="" alt="salon" title="salon" data-img-src="./assets/images/plan/floor_1_salon.webp"
-                                coords="661,41,1132,267" shape="rect" class="zone">
-                            <area target="" alt="balcon" title="balcon" data-img-src="./assets/images/plan/floor_1_balcon.webp"
-                                coords="-1,2,576,681" shape="rect">
+                            <area target="" alt="salon" title="salon"
+                                data-img-src="./assets/images/plan/floor_1_salon.webp" coords="661,41,1132,267"
+                                shape="rect" class="zone">
+                            <area target="" alt="balcon" title="balcon"
+                                data-img-src="./assets/images/plan/floor_1_balcon.webp" coords="-1,2,576,681"
+                                shape="rect">
                             <area target="" alt="tv" title="tv" data-img-src="./assets/images/plan/floor_1_tv.webp"
                                 coords="188,1266,833,1459" shape="rect">
                             <area target="" alt="salle de bain" title="salle de bain"
                                 data-img-src="./assets/images/plan/floor_1_bathroom.webp" coords="1713,709,2292,1193"
                                 shape="rect">
-                            <area target="" alt="lit 1" title="lit 1" data-img-src="./assets/images/plan/floor_1_lit_1.webp"
-                                coords="1463,33,1961,654" shape="rect">
-                            <area target="" alt="cuisine" title="cuisine" data-img-src="./assets/images/plan/floor_1_cuisine.webp"
-                                coords="1284,654,1453,1152" shape="rect">
+                            <area target="" alt="lit 1" title="lit 1"
+                                data-img-src="./assets/images/plan/floor_1_lit_1.webp" coords="1463,33,1961,654"
+                                shape="rect">
+                            <area target="" alt="cuisine" title="cuisine"
+                                data-img-src="./assets/images/plan/floor_1_cuisine.webp" coords="1284,654,1453,1152"
+                                shape="rect">
                         </map>
                     </div>
                     <div class="plan-description">
@@ -178,10 +183,12 @@
                         <img src="./assets/images/plan/floor_ 2.webp" usemap="#image-map-level" class="plan-image"
                             alt="Plan du deuxième étage">
                         <map name="image-map-level">
-                            <area target="" alt="lit 2" title="lit 2" data-img-src="./assets/images/plan/floor_2_lit_2.webp"
-                                coords="42,67,563,304" shape="rect">
-                            <area target="" alt="lit 3" title="lit 3" data-img-src="./assets/images/plan/floor_2_lit_3.webp"
-                                coords="798,690,1319,964" shape="rect">
+                            <area target="" alt="lit 2" title="lit 2"
+                                data-img-src="./assets/images/plan/floor_2_lit_2.webp" coords="42,67,563,304"
+                                shape="rect">
+                            <area target="" alt="lit 3" title="lit 3"
+                                data-img-src="./assets/images/plan/floor_2_lit_3.webp" coords="798,690,1319,964"
+                                shape="rect">
                         </map>
                     </div>
                     <div class="plan-description">
@@ -214,18 +221,16 @@
             <h2 class="section-title">Réservez votre séjour en quelques clics</h2>
             <div class="reservation-container">
                 <header class="reservation-header">
-                    <p class="section-subtitle">Attention, les tarifs varient en fonction de la saison. Découvrez notre
-                        liste de prix ci dessous, et contactez le
-                        propriétaire via le formulaire au bas de la page.</p>
+                    <p class="section-subtitle">Veuillez noter que nos tarifs varient en fonction de la saison. Consultez la liste des prix ci-dessous pour connaître
+                    les disponibilités et les tarifs de chaque semaine. Pour effectuer une réservation, cliquez simplement sur le bouton
+                    "Réserver" correspondant à la semaine de votre choix.</p>
 
-                    <p>Le prix de la location comprend un emplacement de garage couvert dans le résidence Deneb,
-                        Stationnement n° 14, à 50m de
-                        l’appartement.</p>
+
                 </header>
 
 
                 <div id="calendar-container">
-                    <table border="1">
+                    <table>
                         <thead>
                             <tr>
                                 <th>Semaine</th>
@@ -234,58 +239,43 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td colspan="3">
+                                    <div>
+                                        <div class="loader"></div>
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
 
-
-
+                <h2 class="pricing-title">Tarifs saisonniers</h2>
                 <div class="pricing-section">
-                    <h2 class="pricing-title">Tarifs saisonniers</h2>
 
                     <!-- Carte Basse Saison -->
-                    <div class="pricing-card">
-                        <div class="card-header">
-                            TARIF BASSE SAISON
-                        </div>
-                        <div class="price">
-                            830€
-                        </div>
-                        <div class="periods">
-                            <div class="period">14 déc 2024 - 21 déc 2024</div>
-                            <div class="period">4 jan 2025 - 1er fév 2025</div>
-                            <div class="period">8 mars 2025 - 5 avril 2025</div>
-                        </div>
-                    </div>
-
+                    <article class="season">
+                        <h3 class="card-header">TARIF BASSE SAISON</h3>
+                        <div class="price">830€</div>
+                    </article>
                     <!-- Carte Haute Saison -->
-                    <div class="pricing-card">
-                        <div class="card-header">
-                            TARIF HAUTE SAISON
-                        </div>
-                        <div class="price">
-                            1370€
-                        </div>
-                        <div class="periods">
-                            <div class="period">21 déc 2024 - 4 jan 2025</div>
-                            <div class="period">1er fév 2025 - 8 mars 2025</div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="reservation-info">
-                    <div class="info-box">
-                        <h3>Informations importantes</h3>
-                        <ul>
-                            <li>Arrivée à partir de 16h</li>
-                            <li>Départ avant 10h</li>
-                            <li>6 personnes maximum</li>
-                        </ul>
-                    </div>
+                    <article class="season">
+                        <h3 class="card-header">TARIF HAUTE SAISON</h3>
+                        <div class="price">1370€</div>
+                    </article>
 
                 </div>
+                <article class="reservation-info">
+                    <h3>Informations importantes</h3>
+                    <ul>
+                        <li>Arrivée à partir de 16h</li>
+                        <li>Départ avant 10h</li>
+                        <li>6 personnes maximum</li>
+                    </ul>
+                    <p>Le prix de la location comprend un emplacement de garage couvert dans le résidence Deneb,
+                        Stationnement n° 14, à 50m de
+                        l’appartement.</p>
+                </article>
             </div>
         </section>
 
@@ -296,7 +286,8 @@
 
             <div class="activities-cards">
                 <article class="activity-card">
-                    <img src="./assets/images/section_activite/parapente.png" alt="Parapente en montagne" class="activity-img">
+                    <img src="./assets/images/section_activite/parapente.png" alt="Parapente en montagne"
+                        class="activity-img">
                     <div class="activity-content">
                         <h3>Parapente</h3>
                         <p>Découvrez la montagne vue du ciel et vivez une expérience inoubliable.</p>
@@ -304,7 +295,8 @@
                 </article>
 
                 <article class="activity-card">
-                    <img src="./assets/images/section_activite/randonnee.png" alt="Randonnée en montagne" class="activity-img">
+                    <img src="./assets/images/section_activite/randonnee.png" alt="Randonnée en montagne"
+                        class="activity-img">
                     <div class="activity-content">
                         <h3>Randonnée</h3>
                         <p>Explorez les plus beaux sentiers de montagne et profitez de vues époustouflantes.</p>
@@ -312,7 +304,8 @@
                 </article>
 
                 <article class="activity-card">
-                    <img src="./assets/images/section_activite/tyrolienne.png" alt="Tyrolienne en forêt" class="activity-img">
+                    <img src="./assets/images/section_activite/tyrolienne.png" alt="Tyrolienne en forêt"
+                        class="activity-img">
                     <div class="activity-content">
                         <h3>Tyrolienne</h3>
                         <p>Sensations garanties sur nos parcours sécurisés au cœur de la nature.</p>
