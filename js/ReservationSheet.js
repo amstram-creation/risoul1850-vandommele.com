@@ -7,10 +7,12 @@ export default class ReservationSheet {
 
   async fetchReservations() {
     try {
-      let response = await fetch(this.apiUrl);
-      let text = await response.text();
-      let jsonData = this.extractJSONFromSheetsResponse(text);
-      this.displayReservations(this.extractReservationDates(jsonData.rows));
+      let _;
+      _ = await fetch(this.apiUrl);
+      _ = await _.text();
+      _ = this.extractJSONFromSheetsResponse(_);
+
+      return this.extractReservationDates(_.rows);
     } catch (error) {
       console.error('Error fetching reservations:', error);
     }
@@ -53,8 +55,36 @@ export default class ReservationSheet {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
+  async refreshReservations() {
+    const reservations = await this.fetchReservations();
 
-  displayReservations(reservations) {
+    console.log(reservations);
+    //iterate on the set
+    reservations.forEach((date) => {
+      const cells = document.querySelectorAll(`td[data-date="${date}"]`);
+      cells.forEach((cell) => {
+        cell.textContent = 'Réservé';
+        cell.classList.add('booked');
+        cell.setAttribute('aria-label', 'Réservé');
+      });
+    });
+
+    document.querySelectorAll('td[data-date]:not(.booked)').forEach((cell) => {
+      const bookingLink = document.createElement('a');
+      bookingLink.textContent = 'Réserver';
+      bookingLink.href = `https://docs.google.com/forms/d/e/1FAIpQLSebwzkX2anwJ9q6-gAXvaNPkkjKquUhx-tEutfoHXmfUEjTFA/viewform?usp=pp_url&entry.753458274=${cell.dataset.date}`;
+      bookingLink.target = '_blank';
+      bookingLink.classList.add('book-now');
+      bookingLink.setAttribute(
+        'aria-label',
+        `Réserver pour la semaine du ${cell.dataset.date}`
+      );
+      cell.innerHTML = '';
+      cell.appendChild(bookingLink);
+    });
+  }
+
+  displayReservations() {
     const tbody = document.querySelector('#calendar-container table tbody');
     tbody.innerHTML = '';
 
@@ -68,38 +98,33 @@ export default class ReservationSheet {
       day: 'numeric',
       month: 'long',
     });
-
-    for (let i = 0; i < numWeeks; i++) {
-      let ISODate = this.formatDateToISO(currentDate);
-      let frenchDate = `Semaine du ${formatter.format(currentDate)}`;
-      let price = this.isHighSeason(ISODate) ? '1370 €' : '830 €';
-
-      const row = document.createElement('tr');
-
-      let cell = document.createElement('td');
-      cell.textContent = frenchDate;
-      row.appendChild(cell);
-
-      cell = document.createElement('td');
-      cell.textContent = price;
-      row.appendChild(cell);
-
-      cell = document.createElement('td');
-      if (reservations.has(ISODate)) {
-        cell.textContent = 'Réservé';
-        cell.classList.add('booked');
-      } else {
-        const bookingLink = document.createElement('a');
-        bookingLink.textContent = 'Réserver';
-        bookingLink.href = `https://docs.google.com/forms/d/e/1FAIpQLSebwzkX2anwJ9q6-gAXvaNPkkjKquUhx-tEutfoHXmfUEjTFA/viewform?usp=pp_url&entry.753458274=${ISODate}`;
-        bookingLink.target = '_blank';
-        bookingLink.classList.add('book-now');
-        cell.appendChild(bookingLink);
-      }
-      row.appendChild(cell);
-      tbody.appendChild(row);
+    let ISODate, frenchDate, price, row, cell, loader;
+    for (let i = 0; i < numWeeks; ++i) {
+      ISODate = this.formatDateToISO(currentDate);
+      frenchDate = `Semaine du ${formatter.format(currentDate)}`;
+      price = this.isHighSeason(ISODate) ? '1370 €' : '830 €';
+      const row = `
+      <tr>
+        <td aria-label="Semaine commençant le ${formatter.format(currentDate)}">
+          ${frenchDate}
+        </td>
+        <td aria-label="Prix : ${price}">
+          ${price}
+        </td>
+        <td data-date="${ISODate}">
+          <a href="mailto:info@risoul1850-vandommele.com?subject=Réservation%20pour%20la%20semaine%20du%20${ISODate}" 
+             target="_blank" 
+             class="book-now" 
+             aria-label="Réserver pour la semaine du ${ISODate}">
+            Réserver
+          </a>
+        </td>
+      </tr>
+    `;
+      tbody.insertAdjacentHTML('beforeend', row);
       currentDate.setDate(currentDate.getDate() + 7);
     }
+    this.refreshReservations();
   }
 
   handleBookingClick(event) {
