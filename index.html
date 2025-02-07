@@ -24,66 +24,29 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./assets/risoul.css">
     <link rel="canonical" href="https://risoul1850-vandommele.com">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kurale&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
     <header class="hero">
         <div class="hero__video-container">
-            <script>
-                function loadVideo() {
-                    const videoContainer = document.querySelector('.hero__video-container');
-                    if (videoContainer) {
-                        videoContainer.innerHTML = '';
-
-                        const video = document.createElement('video');
-                        video.classList.add('hero__video', window.innerWidth > 768 ? 'desktop' : 'mobile');
-                        video.autoplay = true;
-                        video.loop = true;
-                        video.muted = true;
-                        video.playsInline = true;
-
-                        const source = document.createElement('source');
-                        source.src = window.innerWidth > 768
-                            ? './assets/video/hero_desktop.mp4'
-                            : './assets/video/hero_mobile.mp4';
-                        source.type = 'video/mp4';
-
-                        video.appendChild(source);
-                        videoContainer.appendChild(video);
-                    }
-                }
-
-                // Load the video on page load
-                window.addEventListener('load', loadVideo);
-                // Reload the video when resizing the window
-                window.addEventListener('resize', loadVideo);
-
-            </script>
-
-
-            <!-- Menu Burger -->
-            <div class="burger-menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <div class="nav-overlay">
-                <nav>
-                    <ul class="nav-buttons">
-                        <li style="--i:1"><a href="#accueil" class="nav-button">Accueil</a></li>
-                        <li style="--i:2"><a href="#logement" class="nav-button">Logement</a></li>
-                        <li style="--i:3"><a href="#reservation" class="nav-button">Réservation</a></li>
-                        <li style="--i:4"><a href="#activites" class="nav-button">Activités</a></li>
-                    </ul>
-                </nav>
-            </div>
+            
         </div>
-
+<!-- Menu Burger -->
+<div class="burger-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+<div class="nav-overlay">
+    <nav>
+        <ul class="nav-buttons">
+            <li style="--i:1"><a href="#accueil" class="nav-button">Accueil</a></li>
+            <li style="--i:2"><a href="#logement" class="nav-button">Logement</a></li>
+            <li style="--i:3"><a href="#reservation" class="nav-button">Réservation</a></li>
+            <li style="--i:4"><a href="#activites" class="nav-button">Activités</a></li>
+        </ul>
+    </nav>
+</div>
         <div class="welcome-container">
             <h1 class="welcome-texth1">Bienvenue </h1>
             <h2 class="welcome-texth2">Résidence Pégase</h2>
@@ -97,22 +60,16 @@
 
             <div class="content-wrapper">
                 <div class="text-content">
-                    <div class="intro-text">
-                        <p>Perchée à flanc de montagne, la résidence Pégase vous invite à une parenthèse enchantée
-                            entre ciel et sommets. Niché au 7ᵉ étage, notre chalet allie charme alpin et confort
-                            moderne pour une escapade inoubliable.</p>
-                    </div>
+                    <p>Perchée à flanc de montagne, la résidence Pégase vous invite à une parenthèse enchantée
+                        entre ciel et sommets. Niché au 7ᵉ étage, notre chalet allie charme alpin et confort
+                        moderne pour une escapade inoubliable.</p>
 
-                    <div class="experience-text">
-                        <p>Que vous soyez en quête d'adrénaline sur les pistes enneigées, de randonnées au grand air
-                            ou simplement d'un cocon chaleureux où vous détendre, notre chalet est le lieu idéal
-                            pour vivre des instants magiques en famille & entre amis.</p>
-                    </div>
+                    <p>Que vous soyez en quête d'adrénaline sur les pistes enneigées, de randonnées au grand air
+                        ou simplement d'un cocon chaleureux où vous détendre, notre chalet est le lieu idéal
+                        pour vivre des instants magiques en famille & entre amis.</p>
 
-                    <div class="location-text">
-                        <p>Notre appartement est idéalement situé pour profiter au mieux de ce superbe endroit, un
-                            panorama époustouflant sur les montagnes environnantes.</p>
-                    </div>
+                    <p>Notre appartement est idéalement situé pour profiter au mieux de ce superbe endroit, un
+                        panorama époustouflant sur les montagnes environnantes.</p>
 
                     <div class="access-info">
                         <h3>Accès privilégié</h3>
@@ -124,10 +81,8 @@
                         </ul>
                     </div>
 
-                    <div class="closing-text">
-                        <p>Laissez-vous séduire par l'authenticité et la sérénité des lieux. Réservez dès maintenant
-                            votre séjour à la résidence Pégase et vivez la montagne autrement.</p>
-                    </div>
+                    <p>Laissez-vous séduire par l'authenticité et la sérénité des lieux. Réservez dès maintenant
+                        votre séjour à la résidence Pégase et vivez la montagne autrement.</p>
                 </div>
 
                 <div class="image-container">
@@ -139,10 +94,9 @@
             </div>
         </section>
 
-
         <!-- Section Galerie -->
         <section id="logement" class="main-section">
-            <h2 class="section-title">Le logement</h2>
+            <h2>Le logement</h2>
 
             <div class="floor-plans">
                 <!-- Premier étage -->
@@ -197,33 +151,26 @@
                 </div>
             </div>
 
-            <!-- Modal pour les images -->
-            <div id="imageModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-modal">&times;</span>
-                    <img id="modalImage" src="" alt="">
-                    <div id="modalCaption"></div>
-                </div>
-            </div>
+
         </section>
 
-        <div class="station-section">
-            <h2 class="section-title">La station</h2>
+        <section id="station">
+            <h2>La station</h2>
             <iframe
                 src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d709.9373765730575!2d6.6310796!3d44.6225962!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12ccba52919374bb%3A0x352837e5e55cc8fb!2zUMOpZ2FzZQ!5e0!3m2!1sen!2sbe!4v1738875084622!5m2!1sen!2sbe"
                 width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
+        </section>
 
-
-        <!-- Section Réservation -->
-        <section id="reservation" class="main-section">
-            <h2 class="section-title">Réservez votre séjour en quelques clics</h2>
+        <section id="reservation">
+            <h2>Réservez votre séjour en quelques clics</h2>
             <div class="reservation-container">
                 <header class="reservation-header">
-                    <p class="section-subtitle">Veuillez noter que nos tarifs varient en fonction de la saison. Consultez la liste des prix ci-dessous pour connaître
-                    les disponibilités et les tarifs de chaque semaine. Pour effectuer une réservation, cliquez simplement sur le bouton
-                    "Réserver" correspondant à la semaine de votre choix.</p>
+                    <p class="section-subtitle">Veuillez noter que nos tarifs varient en fonction de la saison.
+                        Consultez la liste des prix ci-dessous pour connaître
+                        les disponibilités et les tarifs de chaque semaine. Pour effectuer une réservation, cliquez
+                        simplement sur le bouton
+                        "Réserver" correspondant à la semaine de votre choix.</p>
 
 
                 </header>
@@ -279,14 +226,13 @@
             </div>
         </section>
 
-        <!-- Section Activités -->
         <section id="activites" class="main-section">
             <h2 class="section-title">Entre nature et aventure : découvrez les activités de la station</h2>
             <p class="section-subtitle">Des expériences uniques au rythme des montagnes, pour petits et grands.</p>
 
             <div class="activities-cards">
                 <article class="activity-card">
-                    <img src="./assets/images/section_activite/parapente.png" alt="Parapente en montagne"
+                    <img src="./assets/images/section_activite/parapente.webp" alt="Parapente en montagne"
                         class="activity-img">
                     <div class="activity-content">
                         <h3>Parapente</h3>
@@ -295,7 +241,7 @@
                 </article>
 
                 <article class="activity-card">
-                    <img src="./assets/images/section_activite/randonnee.png" alt="Randonnée en montagne"
+                    <img src="./assets/images/section_activite/randonnee.webp" alt="Randonnée en montagne"
                         class="activity-img">
                     <div class="activity-content">
                         <h3>Randonnée</h3>
@@ -304,7 +250,7 @@
                 </article>
 
                 <article class="activity-card">
-                    <img src="./assets/images/section_activite/tyrolienne.png" alt="Tyrolienne en forêt"
+                    <img src="./assets/images/section_activite/tyrolienne.webp" alt="Tyrolienne en forêt"
                         class="activity-img">
                     <div class="activity-content">
                         <h3>Tyrolienne</h3>
@@ -318,6 +264,7 @@
             </div>
 
         </section>
+
         <section id="reviews" class="section-reviews">
             <h2 class="section-title">Avis de nos vacanciers</h2>
             <div class="reviews-summary">
@@ -472,6 +419,15 @@
         </div>
     </footer>
 
+    <!-- Modal pour les images -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modalImage" src="" alt="">
+            <div id="modalCaption"></div>
+        </div>
+    </div>
+
     <script type="module">
         //
         import ReservationTable from './js/ReservationSheet.js';
@@ -483,9 +439,39 @@
         );
         // Initialize the MobileNav component when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', () => {
-            reservationTable.fetchReservations();
+            reservationTable.displayReservations();
             new MobileNav();
         });
+
+    </script>
+
+    <script>
+        function loadVideo() {
+            const videoContainer = document.querySelector('.hero__video-container');
+            if (videoContainer) {
+                videoContainer.innerHTML = '';
+
+                const video = document.createElement('video');
+                video.classList.add('hero__video', window.innerWidth > 600 ? 'desktop' : 'mobile');
+                video.autoplay = true;
+                video.loop = true;
+                video.muted = true;
+                video.playsInline = true;
+
+                const source = document.createElement('source');
+                source.src = window.innerWidth > 600
+                    ? './assets/video/hero_desktop.mp4'
+                    : './assets/video/hero_mobile.mp4';
+                source.type = 'video/mp4';
+
+                video.appendChild(source);
+                videoContainer.appendChild(video);
+            }
+        }
+
+        loadVideo();
+        // Reload the video when resizing the window
+        window.addEventListener('resize', loadVideo);
 
     </script>
 </body>
