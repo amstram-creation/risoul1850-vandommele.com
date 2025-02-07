@@ -34,29 +34,16 @@ export default class ReservationSheet {
     console.log(jsonData);
     const dateSet = new Set();
     jsonData.forEach((row) => {
-      console.log(row);
       if (
         row.c &&
-        row.c[0] &&
-        row.c[0].v &&
+        row.c[row.c.length - 2] &&
+        row.c[row.c.length - 2].v &&
         row.c[row.c.length - 1] &&
         row.c[row.c.length - 1].v
       ) {
-        const dateMatch = row.c[0].v.match(/Date\((\d+),(\d+),(\d+).+\)/);
-        console.log(dateMatch);
-        if (dateMatch) {
-          const year = dateMatch[1];
-          const month = dateMatch[2];
-          const day = dateMatch[3];
-          const ISODate = `${year}-${String(Number(month) + 1).padStart(
-            2,
-            '0'
-          )}-${String(day).padStart(2, '0')}`;
-          dateSet.add(ISODate);
-        }
+        dateSet.add(row.c[row.c.length - 2].v);
       }
     });
-    console.log(dateSet);
     return dateSet;
   }
 
