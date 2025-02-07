@@ -177,24 +177,6 @@
 
 
                 <div id="calendar-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Semaine</th>
-                                <th>Tarifs</th>
-                                <th>Etat</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="3">
-                                    <div>
-                                        <div class="loader"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
 
                 <h2 class="pricing-title">Tarifs saisonniers</h2>
@@ -432,14 +414,12 @@
         //
         import ReservationTable from './js/ReservationSheet.js';
         import MobileNav from './js/MobileNav.js';
-        // Example usage
-        const reservationTable = new ReservationTable(
-            '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE',
-            'reservation_dates'
-        );
         // Initialize the MobileNav component when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', () => {
-            reservationTable.displayReservations();
+            new ReservationTable(
+                '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE',
+                'reservation_dates'
+            );
             new MobileNav();
         });
 

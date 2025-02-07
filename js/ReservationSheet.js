@@ -3,14 +3,15 @@ export default class ReservationSheet {
     this.cache = new ReservationCache();
     this.extractor = new GoogleSheetExtractor(sheetId, sheetName);
     this.fresh = false;
-    this.ui = new ReservationUI('#calendar-container table tbody');
+    this.ui = new ReservationUI('#calendar-container');
+    this.refreshReservations();
   }
 
   async refreshReservations() {
     const reservations = await this.cache.reservations();
     //iterate on the set
     reservations.forEach((date) => {
-      const cells = document.querySelectorAll(`td[data-date="${date}"]:not(.booked)`);
+      const cells = document.querySelectorAll(`[data-date="${date}"]:not(.booked)`);
       cells.forEach((cell) => {
         cell.textContent = 'Réservé';
         cell.classList.add('booked');
@@ -18,7 +19,7 @@ export default class ReservationSheet {
       });
     });
 
-    document.querySelectorAll('td[data-date]:not(.booked)').forEach((cell) => {
+    document.querySelectorAll('[data-date]:not(.booked)').forEach((cell) => {
       const bookingLink = document.createElement('a');
       bookingLink.textContent = 'Réserver';
       bookingLink.href = `https://docs.google.com/forms/d/e/1FAIpQLSebwzkX2anwJ9q6-gAXvaNPkkjKquUhx-tEutfoHXmfUEjTFA/viewform?usp=pp_url&entry.753458274=${cell.dataset.date}`;
@@ -33,12 +34,6 @@ export default class ReservationSheet {
     });
     
   }
-
-  displayReservations() {
-    new ReservationUI('#calendar-container table tbody');
-    this.refreshReservations();
-  }
- 
 }
 
 class ReservationCache {
@@ -73,8 +68,9 @@ class ReservationCache {
 
 class ReservationUI {
   constructor(selector) {
-    const tbody = document.querySelector(selector);
-    tbody.innerHTML = '';
+    const container = document.querySelector(selector);
+    console.log(container, selector);
+    container.innerHTML = '';
 
     let currentDate = new Date();
     if (currentDate.getDay() !== 6) {
@@ -87,33 +83,36 @@ class ReservationUI {
       month: 'long',
     });
 
-    let ISODate, frenchDate, price, row, cell, loader;
+    let ISODate, frenchDate, price;
     for (let i = 0; i < numWeeks; ++i) {
       ISODate = this.formatDateToISO(currentDate);
       frenchDate = `Semaine du ${formatter.format(currentDate)}`;
       price = this.isHighSeason(ISODate) ? '1370 €' : '830 €';
-      const row = `
-      <tr>
-        <td aria-label="Semaine commençant le ${formatter.format(currentDate)}">
-          ${frenchDate}
-        </td>
-        <td aria-label="Prix : ${price}">
-          ${price}
-        </td>
-        <td data-date="${ISODate}">
-          <a href="mailto:info@risoul1850-vandommele.com?subject=Réservation%20pour%20la%20semaine%20du%20${ISODate}" 
-             target="_blank" 
-             class="book-now" 
-             aria-label="Réserver pour la semaine du ${ISODate}">
-            Réserver
-          </a>
-        </td>
-      </tr>
-    `;
-      tbody.insertAdjacentHTML('beforeend', row);
+
+      const item = `
+            <div class="booking-item">
+                <span class="week" aria-label="Semaine commençant le ${formatter.format(
+                  currentDate
+                )}">
+                    ${frenchDate}
+                </span>
+                <span class="price" aria-label="Prix : ${price}">
+                    ${price}
+                </span>
+                <a href="mailto:info@risoul1850-vandommele.com?subject=Réservation%20pour%20la%20semaine%20du%20${ISODate}" 
+                   target="_blank" 
+                   class="book-now"
+                   data-date="${ISODate}"
+                   aria-label="Réserver pour la semaine du ${ISODate}">
+                    Réserver
+                </a>
+            </div>
+        `;
+      container.insertAdjacentHTML('beforeend', item);
       currentDate.setDate(currentDate.getDate() + 7);
     }
   }
+
   isHighSeason(dateString) {
     const date = new Date(dateString);
     const month = date.getMonth() + 1;
