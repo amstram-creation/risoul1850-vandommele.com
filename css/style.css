@@ -15,73 +15,6 @@
     /* Applique un flou */
 }
 
-
-.nav-buttons {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    /* transform: translateY(50%); */
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    list-style: none;
-    z-index: 10;
-    padding: 0 2rem;
-}
-
-/* Effet de hover principal */
-.nav-button {
-    background: rgba(73, 175, 205, 0.9);
-    padding: 1rem 3rem;
-    color: white;
-    text-decoration: none;
-    border-radius: 25px 25px 0 0;
-    font-size: 2.5em;
-    min-width: 150px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    border: 2px solid transparent;
-
-    /* Transition plus fluide */
-    transition: transform 0.3s ease-out, background 0.3s ease-out,
-        color 0.3s ease-out, box-shadow 0.3s ease-out;
-}
-
-/* Effet de hover */
-.nav-button:hover {
-    transform: translateY(-8px);
-    /* Moins de déplacement pour éviter l’instabilité */
-    background: rgba(255, 255, 255, 0.9);
-    color: rgba(73, 175, 205, 1);
-    border-color: rgba(73, 175, 205, 1);
-    box-shadow: 0 10px 20px rgba(73, 175, 205, 0.3);
-}
-
-/* Effet de lumière plus doux */
-.nav-button::before {
-    content: '';
-
-    top: 0;
-    left: -150%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.4s ease-out;
-}
-
-.nav-button:hover::before {
-    left: 150%;
-}
-
-/* Animation du texte */
-.nav-button:hover {
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
-    letter-spacing: 1px;
-    /* Moins d’espace pour éviter un effet trop brusque */
-}
-
 .welcome-container {
     display: flex;
     width: 100%;
@@ -111,169 +44,27 @@
 @media (max-width: 768px) {
 
 
-.welcome-text h1 {
-    font-size: 4em;
-    padding: 0 1rem;
-    text-align: center;
-}
-
-
-.welcome-text h2 {
-    font-size: 2em;
-    padding: 0 1rem;
-    text-align: center;
-}
-
-.welcome-text h3 {
-    font-size: 1.2em;
-    padding: 1rem;
-    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
-}
-
-
-}
-
-
-
-
-
-
-
-/*=======================================================*/
-/* Menu Burger mobile */
-/*====================================================*/
-
-/* Menu mobile */
-.burger-menu {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(73, 175, 205, 0.8);
-    padding: 15px;
-    border-radius: 12px;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1100;
-
-}
-
-.burger-menu span {
-    display: block;
-    width: 28px;
-    height: 2px;
-    background-color: white;
-    margin: 6px 0;
-    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 4px;
-}
-
-/* Overlay */
-.nav-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(4px);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 1090;
-}
-
-.nav-overlay.active {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    /* Réactive les événements quand visible */
-}
-
-@media (max-width: 768px) {
-    .burger-menu {
-        display: block;
-    }
-
-    .burger-menu:hover {
-        transform: translateY(-2px);
-        background: rgba(73, 175, 205, 0.9);
-        box-shadow: 0 6px 20px rgba(73, 175, 205, 0.2);
-    }
-
-    .burger-menu.active span:nth-child(1) {
-        transform: rotate(-45deg) translate(-6px, 6px);
-    }
-
-    .burger-menu.active span:nth-child(2) {
-        opacity: 0;
-        transform: translateX(-8px);
-    }
-
-    .burger-menu.active span:nth-child(3) {
-        transform: rotate(45deg) translate(-6px, -6px);
-    }
-
-    .nav-buttons {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        height: 100vh;
-        /* width: 280px; */
-        /* background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(20px); */
-        -webkit-backdrop-filter: blur(20px);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 2rem;
-        padding: 2rem;
-        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1095;
-        /* box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1); */
-        border-left: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .nav-buttons.show {
-        right: 0;
-        visibility: visible;
-        pointer-events: auto;
-    }
-
-    .nav-buttons li {
-        opacity: 0;
-        transform: translateX(30px);
-        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        transition-delay: calc(0.1s * var(--i));
-    }
-
-    .nav-buttons.show li {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    .nav-button {
-        font-size: 1.6em;
-        padding: 1rem 1.5rem;
-        width: 100%;
-        border-radius: 12px;
-        background: rgb(73 175 205 / 48%);
-        border: 1px solid rgba(73, 175, 205, 0.2);
-        /* color: rgba(73, 175, 205, 0.9); */
+    .welcome-text h1 {
+        font-size: 4em;
+        padding: 0 1rem;
         text-align: center;
-        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: block;
-        text-decoration: none;
     }
 
-    .nav-button:hover {
-        background: rgba(73, 175, 205, 0.15);
-        transform: translateX(5px);
-        border-color: rgba(73, 175, 205, 0.3);
+
+    .welcome-text h2 {
+        font-size: 2em;
+        padding: 0 1rem;
+        text-align: center;
     }
+
+    .welcome-text h3 {
+        font-size: 1.2em;
+        padding: 1rem;
+        text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+    }
+
+
 }
-
 
 
 
@@ -669,15 +460,6 @@ iframe {
     margin-bottom: 2rem;
 }
 
-/* Assurez-vous que le calendrier est visible sur mobile */
-@media (max-width: 768px) {
-
-    .calendar-container {
-        min-height: 500px;
-    }
-}
-
-
 .reservation-info {
     padding: 1.5rem;
     background: rgba(73, 175, 205, 0.1);
@@ -730,11 +512,6 @@ iframe {
 }
 
 @media (max-width: 768px) {
-
-    #my-cal-inline {
-        height: 500px;
-        padding: 0.5rem;
-    }
 
     .main-section#reservations {
         padding: 1rem;
