@@ -110,12 +110,11 @@ class GoogleSheetExtractor {
 
   async fetchReservations() {
     try {
-      let _;
-      _ = await fetch(this.apiUrl);
-      _ = await _.text();
-      _ = this.extractJSONFromSheetsResponse(_);
+      const response = await fetch(this.apiUrl);
+      const text = await response.text();
+      const jsonData = this.extractJSONFromSheetsResponse(text);
 
-      return this.extractReservationDates(_.rows);
+      return this.extractReservationDates(jsonData.rows);
     } catch (error) {
       console.error('Error fetching reservations:', error);
     }
@@ -137,7 +136,7 @@ class GoogleSheetExtractor {
 
   extractReservationDates(jsonData) {
     console.log(jsonData);
-    const dateSet = new Set();
+    const dateArray = [];
     jsonData.forEach((row) => {
       if (
         row.c &&
@@ -146,9 +145,9 @@ class GoogleSheetExtractor {
         row.c[row.c.length - 1] &&
         row.c[row.c.length - 1].v
       ) {
-        dateSet.add(row.c[row.c.length - 2].v);
+        dateArray.push(row.c[row.c.length - 2].v);
       }
     });
-    return dateSet;
+    return dateArray;
   }
 }
