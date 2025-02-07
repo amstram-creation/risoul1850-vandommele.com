@@ -33,31 +33,28 @@
     text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
 }
 
-.welcome-text h3 {
+.welcome-texth3 {
     font-size: 1em;
     color: #333;
     text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
 }
 
-
-
 @media (max-width: 768px) {
 
-
-    .welcome-text h1 {
+    .welcome-texth1 {
         font-size: 4em;
         padding: 0 1rem;
         text-align: center;
     }
 
 
-    .welcome-text h2 {
+    .welcome-texth2 {
         font-size: 2em;
         padding: 0 1rem;
         text-align: center;
     }
 
-    .welcome-text h3 {
+    .welcome-texth3 {
         font-size: 1.2em;
         padding: 1rem;
         text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
@@ -667,14 +664,6 @@ iframe {
     }
 }
 
-
-
-
-
-
-
-
-
 /*=======================================================*/
 /* Reviews */
 /*====================================================*/
@@ -728,16 +717,16 @@ iframe {
 
 .reviews-container {
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    max-width: 800px;
-    margin: 0 auto;
+    flex-wrap:wrap;
+    gap: var(--small-space);
+    justify-content: center;
 }
 
 .review-card {
     background: white;
+    width:18rem;
     border-radius: 15px;
-    padding: 1.5rem;
+    padding: var(--small-space);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     border: 1px solid #eee;
 }
@@ -837,15 +826,10 @@ iframe {
     .section-reviews {
         padding: 4rem 2rem;
     }
-
     .reviews-container {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-    }
-
-    .review-card {
-        flex: 0 1 calc(50% - 1rem);
     }
 }
 
