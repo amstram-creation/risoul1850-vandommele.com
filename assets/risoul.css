@@ -65,10 +65,11 @@ main>section>h2 {
 }
 #reservation table {
     width: 100%;
+    max-width:30rem;
     border-collapse: collapse;
     font-family: Arial, sans-serif;
     font-size: 16px;
-    margin-top: var(--small-space);
+    margin: var(--small-space) auto var(--large-space) auto;
 }
 
 #reservation th,

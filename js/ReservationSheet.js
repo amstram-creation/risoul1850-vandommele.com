@@ -1,24 +1,16 @@
 export default class ReservationSheet {
   constructor(sheetId, sheetName) {
+    this.cache = new ReservationCache();
     this.extractor = new GoogleSheetExtractor(sheetId, sheetName);
-  }
-
-  
-
-  formatDateToISO(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    this.fresh = false;
+    this.ui = new ReservationUI('#calendar-container table tbody');
   }
 
   async refreshReservations() {
-    const reservations = await this.extractor.fetchReservations();
-
-    console.log(reservations);
+    const reservations = await this.cache.reservations();
     //iterate on the set
     reservations.forEach((date) => {
-      const cells = document.querySelectorAll(`td[data-date="${date}"]`);
+      const cells = document.querySelectorAll(`td[data-date="${date}"]:not(.booked)`);
       cells.forEach((cell) => {
         cell.textContent = 'Réservé';
         cell.classList.add('booked');
@@ -39,10 +31,49 @@ export default class ReservationSheet {
       cell.innerHTML = '';
       cell.appendChild(bookingLink);
     });
+    
   }
 
   displayReservations() {
-    const tbody = document.querySelector('#calendar-container table tbody');
+    new ReservationUI('#calendar-container table tbody');
+    this.refreshReservations();
+  }
+ 
+}
+
+class ReservationCache {
+  constructor() {
+    this.cache = JSON.parse(
+      localStorage.getItem('risoul1850-vandommele.com_reservations')
+    );
+  }
+
+  async reservations(force = false) {
+    if (this.cache === null || force === true || this.cacheIsOld()) {
+      this.cache = await this.extractor.fetchReservations();
+      localStorage.setItem(
+        'risoul1850-vandommele.com_reservations',
+        JSON.stringify({
+          cache: this.cache,
+          lastUpdate: new Date(),
+        })
+      );
+    }
+    return this.cache;
+  }
+
+  cacheIsOld() {
+    if (this.cache === null) return true;
+    const lastUpdate = new Date(this.cache.lastUpdate);
+    const now = new Date();
+    const diff = now - lastUpdate;
+    return diff > 1000 * 60 * 60; // 1 hour
+  }
+}
+
+class ReservationUI {
+  constructor(selector) {
+    const tbody = document.querySelector(selector);
     tbody.innerHTML = '';
 
     let currentDate = new Date();
@@ -82,10 +113,7 @@ export default class ReservationSheet {
       tbody.insertAdjacentHTML('beforeend', row);
       currentDate.setDate(currentDate.getDate() + 7);
     }
-
-    this.refreshReservations();
   }
-
   isHighSeason(dateString) {
     const date = new Date(dateString);
     const month = date.getMonth() + 1;
@@ -99,7 +127,14 @@ export default class ReservationSheet {
 
     return false;
   }
+  formatDateToISO(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 }
+
 
 class GoogleSheetExtractor {
   constructor(sheetId, sheetName) {
