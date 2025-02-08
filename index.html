@@ -3,34 +3,68 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description"
         content="Découvrez la Résidence Pégase à Risoul 1850, votre refuge au cœur des Alpes pour des séjours inoubliables en toute saison.">
     <meta name="keywords" content="Résidence Pégase, Risoul 1850, séjour montagne, location chalet, vacances Alpes">
     <meta name="author" content="Vandommele">
-    <meta property="og:title" content="Risoul 1850 - Vandommele | Résidence Pégase">
+    <meta property="og:title" content="Résidence Pégase - Risoul 1850 | Vandommele">
     <meta property="og:description"
         content="Découvrez la Résidence Pégase à Risoul 1850, votre refuge au cœur des Alpes pour des séjours inoubliables en toute saison.">
-    <meta property="og:image" content="./assets/og-image.jpg">
+    <meta property="og:image" content="https://risoul1850-vandommele.com/assets/og-image.jpg">
     <meta property="og:url" content="https://risoul1850-vandommele.com">
     <meta property="og:type" content="website">
     <meta name="robots" content="index, follow">
-    <meta name="language" content="French">
+    <meta name="language" content="fr">
     <meta name="revisit-after" content="7 days">
     <meta name="rating" content="general">
     <meta name="distribution" content="global">
-    <title>Risoul 1850 - Vandommele | Résidence Pégase</title>
-    <link rel="icon" href="./assets/favicon.ico" type="image/x-icon">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Résidence Pégase - Risoul 1850">
+    <meta name="twitter:description"
+        content="Découvrez la Résidence Pégase à Risoul 1850, votre refuge au cœur des Alpes pour des séjours inoubliables en toute saison.">
+    <meta name="twitter:image" content="https://risoul1850-vandommele.com/assets/og-image.jpg">
+
+    <title>Résidence Pégase - Risoul 1850 | Vandommele</title>
+    <link rel="icon" href="https://risoul1850-vandommele.com/assets/favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./assets/risoul.css">
+
+    <link rel="preload" href="./assets/risoul.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="./assets/risoul.css">
+    </noscript>
+
     <link rel="canonical" href="https://risoul1850-vandommele.com">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LodgingBusiness",
+      "name": "Résidence Pégase",
+      "url": "https://risoul1850-vandommele.com",
+      "description": "Votre refuge au cœur des Alpes pour des séjours inoubliables en toute saison.",
+      "image": "https://risoul1850-vandommele.com/assets/og-image.jpg",
+      "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Rue de la Station",
+            "addressLocality": "Risoul",
+            "postalCode": "05600",
+            "addressCountry": "FR"
+        },
+        "telephone": "+33-XXX-XXX-XXX"
+    }
+    </script>
 </head>
 
 <body>
     <header class="hero">
-        <div class="hero__video-container">
+        <div class="hero__video-container"></div>
+        <h1>Votre refuge au cœur des Alpes</h1>
+        <h2>pour des séjours inoubliables en toute saison</h2>
+        <h3></h3>
+        <h4>jusqu'à 6 personnes</h4>
 
-        </div>
         <!-- Menu Burger -->
         <div class="burger-menu">
             <span></span>
@@ -47,11 +81,7 @@
                 </ul>
             </nav>
         </div>
-        <div class="welcome-container">
-            <h1 class="welcome-texth1">Bienvenue </h1>
-            <h2 class="welcome-texth2">Résidence Pégase</h2>
-            <h3 class="welcome-texth3">6 personnes, Pegase 71</h3>
-        </div>
+
     </header>
 
     <main>
@@ -99,8 +129,7 @@
             <h2>Le logement</h2>
 
             <div class="floor-plans">
-                <!-- Premier étage -->
-                <div class="floor-plan">
+                <article class="floor-plan level-1">
                     <h3>Premier étage</h3>
                     <div class="plan-container">
                         <img src="./assets/images/plan/floor_1.webp" usemap="#image-map-ground" class="plan-image"
@@ -125,13 +154,9 @@
                                 shape="rect">
                         </map>
                     </div>
-                    <div class="plan-description">
-                        Salon, cuisine équipée, salle de bain, chambre avec un lit double
-                    </div>
-                </div>
-
-                <!-- Deuxième étage -->
-                <div class="floor-plan">
+                    <p class="plan-description">Salon, cuisine équipée, salle de bain, chambre avec un lit double</p>
+                </article>
+                <article class="floor-plan level-2">
                     <h3>Deuxième étage</h3>
                     <div class="plan-container">
                         <img src="./assets/images/plan/floor_ 2.webp" usemap="#image-map-level" class="plan-image"
@@ -145,37 +170,29 @@
                                 shape="rect">
                         </map>
                     </div>
-                    <div class="plan-description">
-                        Mezzanine avec un canapé-lit et un lit simple
-                    </div>
-                </div>
+                    <p class="plan-description">Mezzanine avec un canapé-lit et un lit simple</p>
+                </article>
             </div>
-
-
         </section>
 
         <section id="station">
             <h2>La station</h2>
-            <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d709.9373765730575!2d6.6310796!3d44.6225962!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12ccba52919374bb%3A0x352837e5e55cc8fb!2zUMOpZ2FzZQ!5e0!3m2!1sen!2sbe!4v1738875084622!5m2!1sen!2sbe"
-                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div id="map" aria-label="Carte des alentours de la résidence Pégase"></div>
         </section>
-        <section>
+        <section id="pricing">
             <h2 class="pricing-title">Tarifs saisonniers</h2>
-            <div class="pricing-section">
-        
+            <div class="seasons">
                 <!-- Carte Basse Saison -->
-                <article class="season">
-                    <h3 class="card-header">TARIF BASSE SAISON</h3>
+                <article>
+                    <h3>TARIF BASSE SAISON</h3>
                     <div class="price">830€</div>
                 </article>
                 <!-- Carte Haute Saison -->
-                <article class="season">
-                    <h3 class="card-header">TARIF HAUTE SAISON</h3>
+                <article>
+                    <h3>TARIF HAUTE SAISON</h3>
                     <div class="price">1370€</div>
                 </article>
-        
+
             </div>
         </section>
         <section id="reservation">
@@ -253,7 +270,7 @@
                         <span class="score">3.3</span>
                         <span class="total">/4</span>
                     </div>
-                    <p class="total-reviews">5 avis vacanciers</p>
+                    <p class="total-reviews">9 avis vacanciers</p>
                 </div>
             </div>
 
@@ -496,14 +513,12 @@
 
     <script type="module">
         //https://docs.google.com/spreadsheets/d/1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE/edit?usp=sharing
-        import ReservationTable from './js/ReservationSheet.js';
+        import ReservationSheet from './js/ReservationSheet.js';
         import MobileNav from './js/MobileNav.js';
         // Initialize the MobileNav component when the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            new ReservationTable(
-                '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE',
-                'reservation_dates'
-            );
+        document.addEventListener('DOMContentLoaded', async () => {
+            let reservations = new ReservationSheet('#calendar-container', '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE', 'reservation_dates');
+            reservations.hydrate();
             new MobileNav();
         });
 
@@ -534,9 +549,6 @@
         }
 
         loadVideo();
-        // Reload the video when resizing the window
-        window.addEventListener('resize', loadVideo);
-
     </script>
 </body>
 

@@ -15,17 +15,6 @@
     /* Applique un flou */
 }
 
-.welcome-container {
-    display: flex;
-    width: 100%;
-    flex-grow: 1;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
 
 .welcome-text {
     font-size: 3em;
@@ -89,8 +78,6 @@
     flex-direction: column;
     gap: 2rem;
 }
-
-
 
 .access-info {
     background: rgba(73, 175, 205, 0.1);
@@ -234,9 +221,7 @@
 
 /* Styles pour la section appartement */
 
-
 .floor-plan {
-    background: white;
     border-radius: 10px;
     padding: 1.5rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -524,36 +509,9 @@ iframe {
     }
 }
 
-
-
-.pricing-title {
-    text-align: center;
-    font-size: 2em;
-    color: #333;
-    margin-bottom: 2rem;
-}
-
-
-
-
-/* Responsive Design */
-@media (max-width: 640px) {
-    .pricing-section {
-        padding: 0 0.5rem;
-    }
-
-    .pricing-title {
-        font-size: 1.75em;
-    }
-}
-
-
-
 /*=======================================================*/
 /* Activités */
 /*====================================================*/
-
-
 
 .section-subtitle {
     text-align: center;
