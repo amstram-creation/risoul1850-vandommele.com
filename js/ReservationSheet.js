@@ -151,12 +151,14 @@ class GoogleSheetExtractor {
     if (_ && _[0]) {
       try {
         _ = JSON.parse(_[0]);
+    console.log(_.rows);
+
         return (_?.rows || [])
           .filter(
             (row) =>
-              row.c && row.c.length >= 2 && row.c[0].v && row.c[0].v !== null
+              row?.c[0]?.f
           )
-          .map((row) => row.c[0].v); // Extract the valid date values
+          .map((row) => row.c[0].f); // Extract the valid date values
       } catch (error) {
         console.error('Invalid JSON extracted:', error);
       }
