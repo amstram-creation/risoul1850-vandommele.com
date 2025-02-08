@@ -1,6 +1,5 @@
 export default class ReservationSheet {
   constructor(sheetId, sheetName) {
-    this.cache = new ReservationCache();
     this.extractor = new GoogleSheetExtractor(sheetId, sheetName);
     this.fresh = false;
     this.ui = new ReservationUI('#calendar-container');
@@ -8,17 +7,18 @@ export default class ReservationSheet {
   }
 
   async refreshReservations() {
-    const reservations = await this.cache.reservations();
+    const reservations = await this.extractor.fetchReservations();
+    console.log('Reservations:', reservations);
     //iterate on the set
+    if (reservations === null) {
+      console.log('Unable to retrieve reservations');
+      return;
+    }
     reservations.forEach((date) => {
-      const cells = document.querySelectorAll(
-        `[data-date="${date}"]:not(.booked)`
-      );
-      cells.forEach((cell) => {
-        cell.textContent = 'Réservé';
-        cell.classList.add('booked');
-        cell.setAttribute('aria-label', 'Réservé');
-      });
+      const cell = document.querySelector(`[data-date="${date}"]:not(.booked)`);
+      cell.textContent = 'Réservé';
+      cell.classList.add('booked');
+      cell.setAttribute('aria-label', 'Réservé');
     });
 
     document.querySelectorAll('[data-date]:not(.booked)').forEach((cell) => {
@@ -37,40 +37,9 @@ export default class ReservationSheet {
   }
 }
 
-class ReservationCache {
-  constructor() {
-    this.cache = JSON.parse(
-      localStorage.getItem('risoul1850-vandommele.com_reservations')
-    );
-  }
-
-  async reservations(force = false) {
-    if (this.cache === null || force === true || this.cacheIsOld()) {
-      this.cache = await this.extractor.fetchReservations();
-      localStorage.setItem(
-        'risoul1850-vandommele.com_reservations',
-        JSON.stringify({
-          cache: this.cache,
-          lastUpdate: new Date(),
-        })
-      );
-    }
-    return this.cache;
-  }
-
-  cacheIsOld() {
-    if (this.cache === null) return true;
-    const lastUpdate = new Date(this.cache.lastUpdate);
-    const now = new Date();
-    const diff = now - lastUpdate;
-    return diff > 1000 * 60 * 60; // 1 hour
-  }
-}
-
 class ReservationUI {
   constructor(selector) {
     const container = document.querySelector(selector);
-    console.log(container, selector);
     container.innerHTML = '';
 
     let currentDate = new Date();
@@ -146,7 +115,7 @@ class ReservationUI {
 
     return false;
   }
-  
+
   formatDateToISO(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -163,45 +132,35 @@ class GoogleSheetExtractor {
   }
 
   async fetchReservations() {
+    console.log('Fetching reservations...', this.apiUrl);
+    let _;
     try {
-      const response = await fetch(this.apiUrl);
-      const text = await response.text();
-      const jsonData = this.extractJSONFromSheetsResponse(text);
-
-      return this.extractReservationDates(jsonData.rows);
+      _ = await fetch(this.apiUrl);
+      _ = await _.text();
+      return this.extractReservationDates(_);
     } catch (error) {
       console.error('Error fetching reservations:', error);
     }
+    return null;
   }
 
-  extractJSONFromSheetsResponse(responseText) {
+  extractReservationDates(_) {
     const regex = /\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/s;
-    const match = responseText.match(regex);
-
-    if (match && match[0]) {
+    
+    _ = _.match(regex);
+    if (_ && _[0]) {
       try {
-        return JSON.parse(match[0]);
+        _ = JSON.parse(_[0]);
+        return (_?.rows || [])
+          .filter(
+            (row) =>
+              row.c && row.c.length >= 2 && row.c[0].v && row.c[0].v !== null
+          )
+          .map((row) => row.c[0].v); // Extract the valid date values
       } catch (error) {
         console.error('Invalid JSON extracted:', error);
       }
     }
     return null;
-  }
-
-  extractReservationDates(jsonData) {
-    console.log(jsonData);
-    const dateArray = [];
-    jsonData.forEach((row) => {
-      if (
-        row.c &&
-        row.c[row.c.length - 2] &&
-        row.c[row.c.length - 2].v &&
-        row.c[row.c.length - 1] &&
-        row.c[row.c.length - 1].v
-      ) {
-        dateArray.push(row.c[row.c.length - 2].v);
-      }
-    });
-    return dateArray;
   }
 }
