@@ -62,8 +62,7 @@
         <div class="hero__video-container"></div>
         <h1>Votre refuge au cœur des Alpes</h1>
         <h2>pour des séjours inoubliables en toute saison</h2>
-        <h3></h3>
-        <h4>jusqu'à 6 personnes</h4>
+        <h3>jusqu'à 6 personnes</h3>
 
         <!-- Menu Burger -->
         <div class="burger-menu">
@@ -117,7 +116,7 @@
 
                 <div class="image-container">
                     <img src="./assets/images/section_gallerie/hiver.jpg" alt="Vue de la Résidence Pégase"
-                        class="main-image">
+                        class="main-image" loading="lazy" width="434" height="288">
                 </div>
 
                 <a href="#reservation" class="cta-button">Réserver maintenant</a>
@@ -133,23 +132,23 @@
                     <h3>Premier étage</h3>
                     <div class="plan-container">
                         <img src="./assets/images/plan/floor_1.webp" usemap="#image-map-ground" class="plan-image"
-                            alt="Plan du premier étage">
+                            alt="Plan du premier étage" width="760" height="555">
                         <map name="image-map-ground">
-                            <area target="" alt="salon" title="salon"
+                            <area href="#" alt="salon" title="salon"
                                 data-img-src="./assets/images/plan/floor_1_salon.webp" coords="661,41,1132,267"
                                 shape="rect" class="zone">
-                            <area target="" alt="balcon" title="balcon"
+                            <area href="#" alt="balcon" title="balcon"
                                 data-img-src="./assets/images/plan/floor_1_balcon.webp" coords="-1,2,576,681"
                                 shape="rect">
-                            <area target="" alt="tv" title="tv" data-img-src="./assets/images/plan/floor_1_tv.webp"
+                            <area href="#" alt="tv" title="tv" data-img-src="./assets/images/plan/floor_1_tv.webp"
                                 coords="188,1266,833,1459" shape="rect">
-                            <area target="" alt="salle de bain" title="salle de bain"
+                            <area href="#" alt="salle de bain" title="salle de bain"
                                 data-img-src="./assets/images/plan/floor_1_bathroom.webp" coords="1713,709,2292,1193"
                                 shape="rect">
-                            <area target="" alt="lit 1" title="lit 1"
+                            <area href="#" alt="lit 1" title="lit 1"
                                 data-img-src="./assets/images/plan/floor_1_lit_1.webp" coords="1463,33,1961,654"
                                 shape="rect">
-                            <area target="" alt="cuisine" title="cuisine"
+                            <area href="#" alt="cuisine" title="cuisine"
                                 data-img-src="./assets/images/plan/floor_1_cuisine.webp" coords="1284,654,1453,1152"
                                 shape="rect">
                         </map>
@@ -159,13 +158,13 @@
                 <article class="floor-plan level-2">
                     <h3>Deuxième étage</h3>
                     <div class="plan-container">
-                        <img src="./assets/images/plan/floor_ 2.webp" usemap="#image-map-level" class="plan-image"
-                            alt="Plan du deuxième étage">
+                        <img src="./assets/images/plan/floor_2.webp" usemap="#image-map-level" class="plan-image"
+                            alt="Plan du deuxième étage" width="760" height="555">
                         <map name="image-map-level">
-                            <area target="" alt="lit 2" title="lit 2"
+                            <area href="#" alt="lit 2" title="lit 2"
                                 data-img-src="./assets/images/plan/floor_2_lit_2.webp" coords="42,67,563,304"
                                 shape="rect">
-                            <area target="" alt="lit 3" title="lit 3"
+                            <area href="#" alt="lit 3" title="lit 3"
                                 data-img-src="./assets/images/plan/floor_2_lit_3.webp" coords="798,690,1319,964"
                                 shape="rect">
                         </map>
@@ -185,12 +184,12 @@
                 <!-- Carte Basse Saison -->
                 <article>
                     <h3>TARIF BASSE SAISON</h3>
-                    <div class="price">830€</div>
+                    <div class="price">830</div>
                 </article>
                 <!-- Carte Haute Saison -->
                 <article>
                     <h3>TARIF HAUTE SAISON</h3>
-                    <div class="price">1370€</div>
+                    <div class="price">1370</div>
                 </article>
 
             </div>
@@ -506,7 +505,7 @@
     <div id="imageModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <img id="modalImage" src="" alt="">
+            <img id="modalImage" src="" alt="" width="400" height="677">
             <div id="modalCaption"></div>
         </div>
     </div>
@@ -518,7 +517,9 @@
         // Initialize the MobileNav component when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', async () => {
             let reservations = new ReservationSheet('#calendar-container', '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE', 'reservation_dates');
-            reservations.hydrate();
+            await reservations.init();
+
+
             new MobileNav();
         });
 
