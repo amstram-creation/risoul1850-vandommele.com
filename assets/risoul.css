@@ -4,6 +4,7 @@
     font-weight: normal;
     font-style: normal;
     font-display: swap;
+
 }
 
 :root {
@@ -17,6 +18,10 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Kurale', serif;
+}
+
+body {
+    background: white;
 }
 
 h2 {
@@ -53,6 +58,7 @@ main>section>h2 {
     max-width: 60rem;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 var(--small-space)
 }
 
 #reservation .price {
@@ -67,7 +73,6 @@ main>section>h2 {
 }
 
 .booking-item {
-    background: white;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -75,7 +80,6 @@ main>section>h2 {
     padding: 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
-    background-color: #f9f9f9;
     align-items: center;
     justify-content: center;
     margin-bottom: var(--small-space);
@@ -118,7 +122,6 @@ main>section>h2 {
 
     .book-now {
         grid-column: 3;
-        justify-self: end;
     }
 }
 
@@ -135,7 +138,6 @@ main>section>h2 {
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    background: white;
 }
 
 .pricing-section article.season h3 {
