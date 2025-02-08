@@ -66,6 +66,7 @@ export default class ReservationSheet {
       console.log('Unable to retrieve reservations');
       return;
     }
+    
     this.reservations.forEach((date) => {
       const cell = this.container.querySelector(
         `[data-date="${date}"]:not(.booked)`
@@ -87,29 +88,35 @@ export default class ReservationSheet {
           ariaLabel: `Réserver pour la semaine du ${cell.dataset.date}`,
         });
       });
-
   }
 
   makeReservationList(currentDate, numWeeks) {
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < numWeeks; ++i) {
+      fragment.appendChild(this.makeReservationItem(currentDate));
+      currentDate.setDate(currentDate.getDate() + 7);
+    }
+
     let _;
+    _ = document.createElement('ul');
+    _.appendChild(fragment);
+    return _;
+  }
+
+  makeReservationItem(currentDate) {
     const formatter = new Intl.DateTimeFormat('fr-FR', {
       day: 'numeric',
       month: 'long',
     });
-    const fragment = document.createDocumentFragment();
 
-    let ISODate, price;
+    let ISODate = this.formatDateToISO(currentDate);
+    let price = this.high_seasons.includes(ISODate)
+      ? this.prices.high
+      : this.prices.low;
 
-    for (let i = 0; i < numWeeks; ++i) {
-      ISODate = this.formatDateToISO(currentDate);
-      price = this.high_seasons.includes(ISODate)
-        ? this.prices.high
-        : this.prices.low;
-
-      fragment.appendChild(
-        Object.assign(document.createElement('li'), {
-          className: 'booking-item',
-          innerHTML: `
+    return Object.assign(document.createElement('li'), {
+      className: 'booking-item',
+      innerHTML: `
           <span class="week">Semaine du ${formatter.format(currentDate)}</span>
           <span class="price" aria-label="Prix pour la semaine">${price}</span>
           <a href="mailto:info@risoul1850-vandommele.com?subject=Réservation%20pour%20la%20semaine%20du%20${ISODate}" 
@@ -118,15 +125,7 @@ export default class ReservationSheet {
              data-date="${ISODate}" 
              aria-label="Réserver pour la semaine du ${ISODate}">Réserver</a>
         `,
-        })
-      );
-
-      currentDate.setDate(currentDate.getDate() + 7);
-    }
-
-    _ = document.createElement('ul');
-    _.appendChild(fragment);
-    return _;
+    });
   }
 
   isHighSeason(date) {
