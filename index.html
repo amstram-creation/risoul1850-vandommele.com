@@ -232,37 +232,37 @@
             <p class="section-subtitle">Des expériences uniques au rythme des montagnes, pour petits et grands.</p>
 
             <div class="activities-cards">
-                <article class="activity-card">
+                <a class="activity-card" href="#" target="_blank">
                     <img src="./assets/images/section_activite/parapente.webp" alt="Parapente en montagne"
                         class="activity-img">
                     <div class="activity-content">
                         <h3>Parapente</h3>
                         <p>Découvrez la montagne vue du ciel et vivez une expérience inoubliable.</p>
                     </div>
-                </article>
+                </a>
 
-                <article class="activity-card">
+                <a class="activity-card">
                     <img src="./assets/images/section_activite/randonnee.webp" alt="Randonnée en montagne"
                         class="activity-img">
                     <div class="activity-content">
                         <h3>Randonnée</h3>
                         <p>Explorez les plus beaux sentiers de montagne et profitez de vues époustouflantes.</p>
                     </div>
-                </article>
+                </a>
 
-                <article class="activity-card">
+                <a class="activity-card">
                     <img src="./assets/images/section_activite/tyrolienne.webp" alt="Tyrolienne en forêt"
                         class="activity-img">
                     <div class="activity-content">
                         <h3>Tyrolienne</h3>
                         <p>Sensations garanties sur nos parcours sécurisés au cœur de la nature.</p>
                     </div>
-                </article>
+                </a>
+                <div class="cta-wrapper">
+                    <a href="#" class="cta-button">Voir plus</a>
+                </div>
             </div>
 
-            <div class="cta-wrapper">
-                <a href="./pages/activites.html" class="cta-button">Voir plus</a>
-            </div>
 
         </section>
 
@@ -278,10 +278,8 @@
                 </div>
             </div>
 
-            <div class="reviews-container">
+            <div class="flex-scroll">
 
-
-                <!-- Review Card 2 -->
                 <article class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -302,7 +300,6 @@
                     </div>
                 </article>
 
-                <!-- Review Card 3 -->
                 <article class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -325,7 +322,6 @@
                     </div>
                 </article>
 
-                <!-- Review Card 4 -->
                 <article class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -346,7 +342,6 @@
                     </div>
                 </article>
 
-                <!-- Review Card 5 -->
                 <article class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -366,7 +361,7 @@
                         <span class="detail-item">Rapport qualité/prix ✓</span>
                     </div>
                 </article>
-                <!-- Review Card 6 -->
+
                 <article class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -388,7 +383,6 @@
                     </div>
                 </article>
 
-                <!-- Review Card 7 -->
                 <article class="review-card">
                     <div class="review-header">
                         <div class="reviewer-info">
@@ -519,13 +513,13 @@
         //https://docs.google.com/spreadsheets/d/1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE/edit?usp=sharing
         import ReservationSheet from './assets/js/ReservationSheet.js';
         import MobileNav from './assets/js/MobileNav.js';
+        import Activities from './assets/js/Activities.js';
         // Initialize the MobileNav component when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', async () => {
             let reservations = new ReservationSheet('#calendar-container', '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE', 'reservation_dates');
             await reservations.init();
-
-
             new MobileNav();
+            new Activities('#activites .cta-button');
         });
 
     </script>
@@ -556,6 +550,8 @@
 
         loadVideo();
     </script>
+
+
 </body>
 
 </html>
