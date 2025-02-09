@@ -68,6 +68,9 @@ main>section>h2 {
     text-align: center;
     line-height: 1.3;
 }
+.price::after{
+    content: ' €';
+}
 
 #station #map {
     height:35rem;
