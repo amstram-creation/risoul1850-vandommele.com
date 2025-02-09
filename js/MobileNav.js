@@ -59,7 +59,7 @@ export default class MobileNav {
     const main = document.querySelector('main');
     if (main) main.style.pointerEvents = 'none';
 
-    document.querySelectorAll('.modal, .calendar-container, area[coords]').forEach(el => {
+    document.querySelectorAll('.modal, area[coords]').forEach(el => {
       el.style.pointerEvents = 'auto';
     });
   }
