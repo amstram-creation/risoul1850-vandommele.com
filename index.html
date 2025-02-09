@@ -26,13 +26,18 @@
     <meta name="twitter:image" content="https://risoul1850-vandommele.com/assets/og-image.jpg">
 
     <title>Résidence Pégase - Risoul 1850 | Vandommele</title>
-    <link rel="icon" href="https://risoul1850-vandommele.com/assets/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+    <link rel="icon" href="./assets/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+    <link rel="manifest" href="./assets/site.webmanifest">
 
-    <link rel="stylesheet" href="./css/style.css">
 
-    <link rel="preload" href="./assets/risoul.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <link rel="preload" href="./assets/css/risoul.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-        <link rel="stylesheet" href="./assets/risoul.css">
+        <link rel="stylesheet" href="./assets/css/risoul.css">
     </noscript>
 
     <link rel="canonical" href="https://risoul1850-vandommele.com">
@@ -512,8 +517,8 @@
 
     <script type="module">
         //https://docs.google.com/spreadsheets/d/1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE/edit?usp=sharing
-        import ReservationSheet from './js/ReservationSheet.js';
-        import MobileNav from './js/MobileNav.js';
+        import ReservationSheet from './assets/js/ReservationSheet.js';
+        import MobileNav from './assets/js/MobileNav.js';
         // Initialize the MobileNav component when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', async () => {
             let reservations = new ReservationSheet('#calendar-container', '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE', 'reservation_dates');
