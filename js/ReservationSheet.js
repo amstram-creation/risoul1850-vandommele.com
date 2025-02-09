@@ -6,9 +6,11 @@ export default class ReservationSheet {
     this.reservations = [];
     this.high_seasons = [];
     this.prices = { high: -1, low: -1 };
+  }
 
+  async init(){
     this.render();
-    this.fetch();
+    await this.fetch();
     this.hydrate();
   }
 
@@ -66,7 +68,7 @@ export default class ReservationSheet {
       console.log('Unable to retrieve reservations');
       return;
     }
-    
+
     this.reservations.forEach((date) => {
       const cell = this.container.querySelector(
         `[data-date="${date}"]:not(.booked)`
@@ -88,17 +90,20 @@ export default class ReservationSheet {
           ariaLabel: `Réserver pour la semaine du ${cell.dataset.date}`,
         });
       });
+
+    this.container.querySelectorAll('.booking-item .price').forEach((price) => {
+      price.textContent = this.priceFor(price.parentElement.dataset.week);
+    })
   }
 
   makeReservationList(currentDate, numWeeks) {
     const fragment = document.createDocumentFragment();
+
     for (let i = 0; i < numWeeks; ++i) {
       fragment.appendChild(this.makeReservationItem(currentDate));
       currentDate.setDate(currentDate.getDate() + 7);
     }
-
-    let _;
-    _ = document.createElement('ul');
+    let _ = document.createElement('ul');
     _.appendChild(fragment);
     return _;
   }
@@ -110,36 +115,40 @@ export default class ReservationSheet {
     });
 
     let ISODate = this.formatDateToISO(currentDate);
-    let price = this.high_seasons.includes(ISODate)
+
+    let _ = document.createElement('li');
+    _.className = 'booking-item';
+    _.setAttribute('data-week', ISODate);
+    _.innerHTML = `
+      <span class="week">Semaine du ${formatter.format(currentDate)}</span>
+      <span class="price" aria-label="Prix pour la semaine">${this.priceFor(ISODate)}</span>
+      <a href="mailto:info@risoul1850-vandommele.com?subject=Réservation%20pour%20la%20semaine%20du%20${ISODate}" 
+         target="_blank" 
+         class="book-now" 
+         data-date="${ISODate}" 
+         aria-label="Réserver pour la semaine du ${ISODate}">Réserver</a>
+    `;
+    return _;
+  }
+
+  priceFor(ISODate){
+    return this.high_seasons.includes(ISODate)
       ? this.prices.high
       : this.prices.low;
-
-    return Object.assign(document.createElement('li'), {
-      className: 'booking-item',
-      innerHTML: `
-          <span class="week">Semaine du ${formatter.format(currentDate)}</span>
-          <span class="price" aria-label="Prix pour la semaine">${price}</span>
-          <a href="mailto:info@risoul1850-vandommele.com?subject=Réservation%20pour%20la%20semaine%20du%20${ISODate}" 
-             target="_blank" 
-             class="book-now" 
-             data-date="${ISODate}" 
-             aria-label="Réserver pour la semaine du ${ISODate}">Réserver</a>
-        `,
-    });
   }
 
-  isHighSeason(date) {
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+  // isHighSeason(date) {
+  //   const month = date.getMonth() + 1;
+  //   const day = date.getDate();
 
-    if ((month === 12 && day >= 20) || (month === 1 && day <= 7)) return true;
-    if ((month === 2 && day >= 10) || (month === 3 && day <= 10)) return true;
-    if (month === 4 && day <= 15) return true;
-    if (month === 7 || month === 8) return true;
-    if ((month === 10 && day >= 25) || (month === 11 && day <= 5)) return true;
+  //   if ((month === 12 && day >= 20) || (month === 1 && day <= 7)) return true;
+  //   if ((month === 2 && day >= 10) || (month === 3 && day <= 10)) return true;
+  //   if (month === 4 && day <= 15) return true;
+  //   if (month === 7 || month === 8) return true;
+  //   if ((month === 10 && day >= 25) || (month === 11 && day <= 5)) return true;
 
-    return false;
-  }
+  //   return false;
+  // }
 
   formatDateToISO(date) {
     let _ = String(date.getFullYear());
