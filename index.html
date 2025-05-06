@@ -183,22 +183,22 @@
             <h2>La station</h2>
             <div id="map" aria-label="Carte des alentours de la résidence Pégase"></div>
         </section>
-        <section id="pricing">
+        <!-- <section id="pricing">
             <h2 class="pricing-title">Tarifs saisonniers</h2>
-            <div class="seasons">
+            <div class="seasons"> -->
                 <!-- Carte Basse Saison -->
-                <article>
+                <!-- <article>
                     <h3>TARIF BASSE SAISON</h3>
                     <div class="price">830</div>
-                </article>
+                </article> -->
                 <!-- Carte Haute Saison -->
-                <article>
+                <!-- <article>
                     <h3>TARIF HAUTE SAISON</h3>
                     <div class="price">1370</div>
                 </article>
 
             </div>
-        </section>
+        </section> -->
         <section id="reservation">
             <h2>Réservez votre séjour en quelques clics</h2>
             <div class="reservation-container">
@@ -511,12 +511,13 @@
 
     <script type="module">
         //https://docs.google.com/spreadsheets/d/1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE/edit?usp=sharing
+        // https://docs.google.com/spreadsheets/d/18rYz517jNffVbf4h-KGCKe6DqyHZXdPM6w8S3xHteDk/edit?usp=sharing
         import ReservationSheet from './assets/js/ReservationSheet.js';
         import MobileNav from './assets/js/MobileNav.js';
         import Activities from './assets/js/Activities.js';
         // Initialize the MobileNav component when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', async () => {
-            let reservations = new ReservationSheet('#calendar-container', '1H_EsmHLfYx7GyIB3U5v5EF8vLUDwgs2FRz8m-M0NkVE', 'reservation_dates');
+            let reservations = new ReservationSheet('#calendar-container', '18rYz517jNffVbf4h-KGCKe6DqyHZXdPM6w8S3xHteDk', 'reservation_dates');
             await reservations.init();
             new MobileNav();
             new Activities('#activites .cta-button');

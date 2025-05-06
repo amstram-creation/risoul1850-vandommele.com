@@ -84,7 +84,8 @@ export default class ReservationSheet {
       .querySelectorAll('[data-date]:not(.booked)')
       .forEach((cell) => {
         Object.assign(cell, {
-          href: `https://docs.google.com/forms/d/e/1FAIpQLSebwzkX2anwJ9q6-gAXvaNPkkjKquUhx-tEutfoHXmfUEjTFA/viewform?usp=pp_url&entry.753458274=${cell.dataset.date}`,
+          // href: `https://docs.google.com/forms/d/e/1FAIpQLSebwzkX2anwJ9q6-gAXvaNPkkjKquUhx-tEutfoHXmfUEjTFA/viewform?usp=pp_url&entry.753458274=${cell.dataset.date}`,
+          href: `https://docs.google.com/forms/d/e/1FAIpQLSegKsOUzSgo_nkSfz9v_VsB3S5jlnlnwrQiYb-2AMTU2CqBlw/viewform?usp=pp_url&entry.494094462=${cell.dataset.date}`,
           target: '_blank',
           className: 'book-now',
           ariaLabel: `Réserver pour la semaine du ${cell.dataset.date}`,
@@ -95,7 +96,6 @@ export default class ReservationSheet {
       price.textContent = this.priceFor(price.parentElement.dataset.week);
     })
   }
-
   makeReservationList(currentDate, numWeeks) {
     const fragment = document.createDocumentFragment();
 
