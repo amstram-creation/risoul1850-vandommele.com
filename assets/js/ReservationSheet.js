@@ -84,12 +84,8 @@ export default class ReservationSheet {
       .querySelectorAll('[data-date]:not(.booked)')
       .forEach((cell) => {
         Object.assign(cell, {
-<<<<<<< HEAD
-          // href: `https://docs.google.com/forms/d/e/1FAIpQLSebwzkX2anwJ9q6-gAXvaNPkkjKquUhx-tEutfoHXmfUEjTFA/viewform?usp=pp_url&entry.753458274=${cell.dataset.date}`,
           href: `https://docs.google.com/forms/d/e/1FAIpQLSegKsOUzSgo_nkSfz9v_VsB3S5jlnlnwrQiYb-2AMTU2CqBlw/viewform?usp=pp_url&entry.494094462=${cell.dataset.date}`,
-=======
-          href: `https://docs.google.com/forms/d/e/1FAIpQLSegKsOUzSgo_nkSfz9v_VsB3S5jlnlnwrQiYb-2AMTU2CqBlw/viewform?entry.494094462=${cell.dataset.date}`,
->>>>>>> 23fd3455a8ca8afb598d20e3d74b432f8476540a
+
           target: '_blank',
           className: 'book-now',
           ariaLabel: `Réserver pour la semaine du ${cell.dataset.date}`,
