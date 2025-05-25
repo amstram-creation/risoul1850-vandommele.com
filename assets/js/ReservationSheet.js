@@ -5,63 +5,81 @@ export default class ReservationSheet {
 
     this.reservations = [];
     this.high_seasons = [];
+    this.summer_weeks = [];
     this.prices = { high: -1, low: -1 };
   }
 
-  async init(){
-    this.render();
+  async init() {
     await this.fetch();
+    this.render();
     this.hydrate();
   }
 
-  render() {
-    let _;
-    _ = this.nextSaturday();
-    _ = this.makeReservationList(_, 24);
-    this.container.innerHTML = '';
-    this.container.appendChild(_);
+render() {
+  const list = this.makeReservationList(); // ← ne passe pas nextSaturday()
 
-    return this;
-  }
+  this.container.innerHTML = '';
+  this.container.appendChild(list);
+
+  console.log('[DEBUG] HTML généré :');
+  console.log(this.container.innerHTML);
+
+  return this;
+}
+
 
   async fetch() {
-    const regex = /\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/s;
+  const regex = /\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/s;
 
-    let _;
+  let _;
 
-    try {
-      console.log('Fetching reservations...', this.url);
-      _ = await fetch(this.url);
-      _ = await _.text();
-      _ = _.match(regex);
+  try {
+    console.log('Fetching reservations...', this.url);
+    _ = await fetch(this.url);
+    _ = await _.text();
+    _ = _.match(regex);
 
-      if (_ && _[0]) {
-        _ = JSON.parse(_[0]);
-        _ = _?.rows || [];
+    if (_ && _[0]) {
+      _ = JSON.parse(_[0]);
+      _ = _?.rows || [];
 
-        this.reservations = _.filter((row) => row?.c[0]?.f).map(
-          (row) => row.c[0].f
-        );
+      this.reservations = _.filter((row) => row?.c[0]?.f).map(
+        (row) => row.c[0].f
+      );
 
-        this.high_seasons = _.map((row) => row.c[2]?.f).filter((date) => date);
+      const ete = _.map((row) => [row.c[5]?.f, row.c[6]?.f]);
+      const hiver = _.map((row) => [row.c[7]?.f, row.c[8]?.f]);
 
-        _ = _.map((row) => row.c[3]?.v).filter(
-          (price) => price !== null && price !== undefined
-        );
+      this.summer_weeks = [...ete, ...hiver]
+        .filter(([date, price]) => date && price);
 
-        this.prices.high = _[0];
-        this.prices.low = _[1];
+      console.log('[DEBUG] Toutes les semaines (été + hiver) :');
+      console.table(this.summer_weeks);
 
-        console.log('Reservations:', this.reservations);
-        console.log('High seasons:', this.high_seasons);
-        console.log('Prices:', this.prices);
-      }
-    } catch (error) {
-      console.error('Error fetching reservations:', error);
+
+      console.log('[DEBUG] Summer weeks reçues :');
+      console.table(this.summer_weeks); // ← AJOUT ICI
+
+      this.high_seasons = _.map((row) => row.c[2]?.f).filter((date) => date);
+
+      _ = _.map((row) => row.c[3]?.v).filter(
+        (price) => price !== null && price !== undefined
+      );
+
+      this.prices.high = _[0];
+      this.prices.low = _[1];
+
+      console.log('Reservations:', this.reservations);
+      console.log('High seasons:', this.high_seasons);
+      console.log('Prices:', this.prices);
     }
-
-    return null;
+  } catch (error) {
+    console.error('Error fetching reservations:', error);
   }
+
+  return null;
+}
+
 
   hydrate() {
     if (this.reservations === null) {
@@ -92,46 +110,49 @@ export default class ReservationSheet {
         });
       });
 
-    this.container.querySelectorAll('.booking-item .price').forEach((price) => {
-      price.textContent = this.priceFor(price.parentElement.dataset.week);
-    })
   }
-  makeReservationList(currentDate, numWeeks) {
+  makeReservationList() {
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < numWeeks; ++i) {
-      fragment.appendChild(this.makeReservationItem(currentDate));
-      currentDate.setDate(currentDate.getDate() + 7);
-    }
-    let _ = document.createElement('ul');
-    _.appendChild(fragment);
-    return _;
+    this.summer_weeks.forEach(([date, price]) => {
+      fragment.appendChild(this.makeReservationItem(date, price));
+    });
+
+    const ul = document.createElement('ul');
+    ul.appendChild(fragment);
+    return ul;
   }
 
-  makeReservationItem(currentDate) {
+  makeReservationItem(ISODate, price) {
+    console.log('Creating reservation item for:', ISODate, price);
+    const [year, month, day] = ISODate.split('-');
+    const dateObj = new Date(year, month - 1, day);
     const formatter = new Intl.DateTimeFormat('fr-FR', {
       day: 'numeric',
       month: 'long',
+      year: 'numeric',
     });
 
-    let ISODate = this.formatDateToISO(currentDate);
+    const li = document.createElement('li');
+    li.className = 'booking-item';
+    li.setAttribute('data-week', ISODate);
+    li.innerHTML = `
+    <span class="week">Semaine du ${formatter.format(dateObj)}</span>
+    <span class="price" aria-label="Prix pour la semaine">${price}</span>
+    <a href="mailto:info@risoul1850-vandommele.com?subject=Réservation%20pour%20la%20semaine%20du%20${ISODate}" 
+       target="_blank" 
+       class="book-now" 
+       data-date="${ISODate}" 
+       aria-label="Réserver pour la semaine du ${ISODate}">Réserver</a>
+  `;
 
-    let _ = document.createElement('li');
-    _.className = 'booking-item';
-    _.setAttribute('data-week', ISODate);
-    _.innerHTML = `
-      <span class="week">Semaine du ${formatter.format(currentDate)}</span>
-      <span class="price" aria-label="Prix pour la semaine">${this.priceFor(ISODate)}</span>
-      <a href="mailto:info@risoul1850-vandommele.com?subject=Réservation%20pour%20la%20semaine%20du%20${ISODate}" 
-         target="_blank" 
-         class="book-now" 
-         data-date="${ISODate}" 
-         aria-label="Réserver pour la semaine du ${ISODate}">Réserver</a>
-    `;
-    return _;
+    console.log('[DEBUG] Élément LI généré :');
+    console.log(li.outerHTML); // ← Ici ✅
+
+    return li;
   }
 
-  priceFor(ISODate){
+  priceFor(ISODate) {
     return this.high_seasons.includes(ISODate)
       ? this.prices.high
       : this.prices.low;
