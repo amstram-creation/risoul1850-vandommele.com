@@ -7,15 +7,8 @@ require 'add/badhat/build.php';
 require 'add/badhat/error.php';
 require 'add/badhat/core.php';
 require 'add/badhat/db.php';
-// require 'add/badhat/auth.php';
-// require 'add/badhat/trust.php';
-// require 'app/morph/html.php';
 
-// vd(qp(db(),"INSERT INTO operator (label, username, password_hash, status) VALUES (?, ?, ?, 1)",['jp', 'jp', password_hash('jp', PASSWORD_DEFAULT)]));die;
 try {
-    // auth(AUTH_SETUP, 'operator.username', qp(db(), "SELECT `password_hash` FROM `operator` WHERE `username` = ?"));
-    // l('fra'); // load french language
-
     $io = __DIR__ . '/../io';
     $in_path    = $io . '/route';
     $out_path   = $io . '/render';
@@ -25,19 +18,14 @@ try {
     $request_admin && auth(AUTH_GUARD, '/login');
 
     // business: find the route and invoke it
-    [$route_path, $args]   = io_map($in_path, $re_quest, 'php', IO_DEEP | IO_FLEX) ?: io_map($in_path, 'index');
-    $in_quest      = io_run($route_path, $args ?? [], IO_INVOKE);
-    // i18n: load french language
+    [$route_path, $args]   = io_map($in_path, $re_quest, 'php') ?: io_map($in_path, 'index');
+    $in_quest = $route_path ? io_run($route_path, $args ?? [], IO_INVOKE) : [];
 
-    // render: match route file and absorb it when possible
     [$render_path, $args]   = io_map($out_path, $re_quest, 'php', IO_DEEP | IO_FLEX) ?: io_map($out_path, 'index');
+    $out_quest  = io_run($render_path,  $in_quest, IO_BUFFER);
 
-    // $render_path = str_replace($in_path, $out_path, $route_path) ?? '';
-    $out_quest  = io_run($render_path, $in_quest[IO_INVOKE] ?? [], IO_ABSORB);
-
-    // absorption is optional, http_body() settles the output
     if (is_string($out_quest[IO_BUFFER]) || is_string($out_quest[IO_ABSORB])) {
-        http_out(200, http_body($out_quest, $request_admin), ['Content-Type' => 'text/html; charset=utf-8']);
+        http_out(200, $out_quest[IO_BUFFER], ['Content-Type' => 'text/html; charset=utf-8']);
         exit;
     }
 
