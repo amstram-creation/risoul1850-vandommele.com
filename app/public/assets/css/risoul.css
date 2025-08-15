@@ -110,6 +110,11 @@ main>section>h2 {
     justify-content: center;
     margin-bottom: var(--small-space);
 }
+.booking-form input{
+    width:100%;
+    padding:0.3rem;
+    margin-bottom:3px;
+}
 
 .week {
     grid-column: 1 / span 2;
@@ -130,7 +135,7 @@ main>section>h2 {
 
 @media (min-width: 500px) {
     .booking-item {
-        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-columns: 2fr 1fr 3fr;
     }
 
     .week {
