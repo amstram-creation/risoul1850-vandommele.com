@@ -23,12 +23,9 @@ CREATE TABLE week (
     -- If booked, require at least a name and booking_date.
     CONSTRAINT chk_booked_requires_guest
         CHECK (
-          (is_booked = 0 AND guest_name IS NULL AND booking_date IS NULL AND confirmed IS NULL
+          (confirmed = 0 AND guest_name IS NULL AND booked_at IS NULL AND confirmed IS NULL
            AND guest_email IS NULL AND guest_phone IS NULL)
           OR
-          (is_booked = 1 AND guest_name IS NOT NULL AND booking_date IS NOT NULL)
+          (confirmed = 1 AND guest_name IS NOT NULL AND booked_at IS NOT NULL)
         )
 );
-
-
-6uGagd)-aNCbW3A(
