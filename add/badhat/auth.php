@@ -34,7 +34,6 @@ function auth(int $behave=0, ?string $u = null, $p = null): ?string
         if($db_password !== false && password_verify($_POST[$p], ($db_password)) && session_regenerate_id(true))
             return ($_SESSION[$username_field] = $_POST[$u]);
     }
-
     if($behave & AUTH_GUARD && !isset($username_field, $_SESSION[$username_field])){
         header('Location: ' . ($u ?: '/'));
         exit;

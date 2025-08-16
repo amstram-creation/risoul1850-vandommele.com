@@ -241,6 +241,7 @@ foreach ($weeks as $week) {
                                 <span class="booked-status">Réservé</span>
                             <?php else: ?>
                                 <form method="POST" action="/book" class="booking-form">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="week_id" value="<?= $week['id'] ?>">
 
                                     <div class="form-group">
