@@ -65,15 +65,14 @@ function csrf_validate(?string $token = null): bool
 {
     $_SESSION[CSRF_KEY]                             ?? throw new BadFunctionCallException('CSRF token not initialized', 403);
     $token = $token ?: ($_POST[CSRF_KEY] ?? '')     ?: throw new BadFunctionCallException('CSRF token is required', 400);
-
+    
     [$master_token, $expires_at] = $_SESSION[CSRF_KEY];
-
     return time() <= $expires_at && hash_equals($master_token, $token);
 }
 
 function csrf_field(int $ttl = 3600): string
 {
-    return '<input type="hidden" name="' . CSRF_KEY . '" value="' . ($_SESSION[CSRF_KEY][0] ?? csrf_token($ttl)) . '" />';
+    return '<input type="hidden" name="' . CSRF_KEY . '" value="' . csrf_token($ttl) . '" />';
 }
 
 // HTTP-HMAC AUTH
