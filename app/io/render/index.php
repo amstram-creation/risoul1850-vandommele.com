@@ -1,56 +1,3 @@
-<?php
-
-if ($_POST) {
-    $week_date   = trim($_POST['week_date'] ?? '');
-    $guest_name  = trim($_POST['guest_name'] ?? '');
-    $guest_email = trim($_POST['guest_email'] ?? '');
-    $guest_phone = trim($_POST['guest_phone'] ?? '');
-
-    $weeks = rangeOfWeeksFrom(new DateTime($week_date), 52, 850, 1370);
-
-    if ($week_date && $guest_name && $guest_email && isset($weeks[$week_date])) {
-        $pdo = db();
-
-        try {
-            $price = $weeks[$week_date]['price'] ?: throw new Exception('Semaine non trouvée', 400);
-            // 1) try to insert a fresh row
-            $insert = qp(
-                $pdo,
-                "INSERT INTO week (week_start, guest_name, guest_email, guest_phone, confirmed, booked_at, price)
-                 VALUES (?, ?, ?, ?, 1, NOW(), ?)",
-                [$week_date, $guest_name, $guest_email, $guest_phone ?: null, $price]
-            );
-
-            if ($insert->rowCount() === 1) {
-                http_out(201, '', ['Location' => '/book']);
-                exit;
-            }
-        } catch (PDOException $e) {
-            // 2) on duplicate key → update only if not confirmed
-            if ($e->getCode() === '23000') { // integrity constraint violation
-                $update = qp(
-                    $pdo,
-                    "UPDATE week
-                     SET guest_name = ?, guest_email = ?, guest_phone = ?, confirmed = 1, booked_at = NOW()
-                     WHERE week_start = ? AND confirmed <> 1 AND guest_name IS NULL AND guest_email IS NULL",
-                    [$guest_name, $guest_email, $guest_phone ?: null, $week_date]
-                );
-
-                if ($update->rowCount() === 1) {
-                    http_out(200, '', ['Location' => '/book']);
-                    exit;
-                } else {
-                    http_out(409, 'Semaine déjà réservée');
-                    exit;
-                }
-            }
-            throw $e; // rethrow if it’s another kind of SQL error
-        }
-    } else {
-        http_out(400, 'Paramètres invalides');
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -242,12 +189,12 @@ if ($_POST) {
                 <!-- Carte Basse Saison -->
                 <article>
                     <h3>TARIF BASSE SAISON</h3>
-                    <div class="price">830</div>
+                    <div class="price"><?= LOW_PRICE ?></div>
                 </article>
                 <!-- Carte Haute Saison -->
                 <article>
                     <h3>TARIF HAUTE SAISON</h3>
-                    <div class="price">1370</div>
+                    <div class="price"><?= HIGH_PRICE ?></div>
                 </article>
 
             </div>
@@ -308,11 +255,17 @@ if ($_POST) {
                         if (info.confirmed === 1) {
                             statusText = "Réservé";
                             cssClass = "reserved";
+                            clone.querySelectorAll('input').forEach(input => {
+                                input.disabled = true; // Disable inputs for confirmed bookings
+                                input.setAttribute('aria-disabled', 'true');
+
+                            });
+                            clone.querySelector('button[type=submit]').disabled = true;
                         } else if (info.confirmed === 0) {
                             statusText = "En attente";
                             cssClass = "pending";
                         }
-                        clone.querySelector(".card-status").textContent = statusText;
+                        clone.querySelector(".week-price").textContent = statusText;
                         article.classList.add(cssClass);
 
                         // Booking form only if available

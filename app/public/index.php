@@ -8,8 +8,10 @@ require 'add/badhat/core.php';
 require 'add/badhat/db.php';
 require 'add/badhat/auth.php';
 
-try {
+const HIGH_PRICE = 1370;
+const LOW_PRICE  = 850;
 
+try {
     auth(AUTH_SETUP, 'username', qp(db(), "SELECT password_hash FROM operator WHERE username = ? AND status = 1", null));
 
     $io = __DIR__ . '/../io';
@@ -22,7 +24,7 @@ try {
 
     // business: find the route and invoke it
     [$route_path, $args]   = io_map($in_path, $re_quest, 'php', IO_FLEX) ?: io_map($in_path, 'index');
-    $in_quest = $route_path ? io_run($route_path, $args ?? []) : [];
+    $in_quest = $route_path ? io_run($route_path, []) : [];
     [$render_path, $args]   = io_map($out_path, $re_quest, 'php', IO_DEEP | IO_FLEX) ?: io_map($out_path, 'index');
     $out_quest  = io_run($render_path,  $in_quest[IO_RETURN] ?? [], IO_BUFFER);
 
@@ -74,7 +76,7 @@ function handle_badhat_exception(Throwable $t): void
     }
 }
 
-function rangeOfWeeksFrom(DateTime $date, int $weeksAhead, $lowSeasonPrice = 830, $highSeasonPrice = 1370): array
+function rangeOfWeeksFrom(DateTime $date, int $weeksAhead, $lowSeasonPrice = LOW_PRICE, $highSeasonPrice = HIGH_PRICE): array
 {
     $weeks = [];
     $after = $date->format('Y-m-d');

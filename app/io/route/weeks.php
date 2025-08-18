@@ -6,7 +6,7 @@ if ($date->format('N') != 1)
     $date->modify('next monday');
 
 
-$weeks = rangeOfWeeksFrom($date, 52, 850, 1370);
+$weeks = rangeOfWeeksFrom($date, 52, LOW_PRICE, HIGH_PRICE);
 
 http_out(
     200,
