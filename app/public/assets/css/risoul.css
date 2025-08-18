@@ -82,7 +82,7 @@ main>section>h2 {
 }
 
 #reservation {
-    max-width: 60rem;
+    max-width: 90vw;
     margin-left: auto;
     margin-right: auto;
     padding: 0 var(--small-space)
@@ -438,6 +438,35 @@ main>section>h2 {
     background: #fbd38d;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 1rem;
+}
+/* Reserved (unavailable) */
+.week-card.reserved {
+    background-color: #F8D7DA;
+    /* light red */
+    border: 2px solid #C82333;
+    /* dark red */
+    color: #721C24;
+    /* readable text on light red */
+}
+
+/* Pending (awaiting confirmation) */
+.week-card.pending {
+    background-color: #FFF3CD;
+    /* light yellow */
+    border: 2px solid #FFC107;
+    /* amber */
+    color: #856404;
+    /* readable text on yellow */
+}
+
+/* Available (open for booking) */
+.week-card.available {
+    background-color: #D4EDDA;
+    /* light green */
+    border: 2px solid #28A745;
+    /* fresh green */
+    color: #155724;
+    /* readable text on green */
 }
 
 .week-card input {
