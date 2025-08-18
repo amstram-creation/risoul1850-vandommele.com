@@ -68,16 +68,17 @@ main>section>h2 {
     text-align: center;
     line-height: 1.3;
 }
-.price::after{
+
+.price::after {
     content: ' €';
 }
 
 #station #map {
-    height:35rem;
+    height: 35rem;
     background-image: url('../images/map.webp');
-    background-size:cover;
-    background-repeat:no-repeat;
-    background-position:center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 #reservation {
@@ -110,11 +111,7 @@ main>section>h2 {
     justify-content: center;
     margin-bottom: var(--small-space);
 }
-.booking-form input{
-    width:100%;
-    padding:0.3rem;
-    margin-bottom:3px;
-}
+
 
 .week {
     grid-column: 1 / span 2;
@@ -123,15 +120,6 @@ main>section>h2 {
 }
 
 
-.book-now {
-    background-color: var(--primary-rgb);
-    border-radius: 4px;
-    padding: var(--small-space);
-    color: #fff;
-    font-size: 1.3rem;
-    text-decoration: none;
-    text-align: center;
-}
 
 @media (min-width: 500px) {
     .booking-item {
@@ -155,13 +143,14 @@ main>section>h2 {
     gap: 2rem;
     margin-bottom: 2rem;
 }
+
 #pricing .seasons article {
     border: 1px solid #e2e8f0;
     border-radius: var(--small-space);
     overflow: hidden;
 }
 
-#pricing .seasons article>*:first-child{
+#pricing .seasons article>*:first-child {
     background-color: var(--primary-rgb);
     color: white;
     padding: 1rem;
@@ -170,7 +159,7 @@ main>section>h2 {
     font-weight: 500;
 }
 
-#pricing .seasons article>*:last-child{
+#pricing .seasons article>*:last-child {
     background-color: #fbd38d;
     padding: 0.75rem;
     text-align: center;
@@ -414,4 +403,63 @@ main>section>h2 {
     padding: var(--small-space);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     border: 1px solid #eee;
+}
+
+
+
+#weeks-container {
+    display: flex;
+    gap: 1rem;
+    /* espace entre cartes */
+    overflow-x: auto;
+    /* scroll horizontal */
+    scroll-snap-type: x mandatory;
+    /* snap agréable */
+    padding: 1rem;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.week-card {
+    flex: 0 0 auto;
+    /* empêcher de rétrécir */
+    width: auto;
+    max-width: 100vw;
+    /* largeur fixe ou responsive */
+    scroll-snap-align: start;
+    /* snap sur le début de chaque carte */
+    border: 1px solid #ddd;
+    border-radius: 0.75rem;
+    background: #fbd38d;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+.week-card input {
+    border: 0px;
+    padding: 0.3rem;
+    line-height: 2rem;
+}
+
+.week-card form {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--small-space);
+}
+
+.book-now {
+    background-color: var(--primary-rgb);
+    border-radius: 4px;
+    padding: var(--small-space);
+    color: #fff;
+    font-size: 1.3rem;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 1.7rem;
 }

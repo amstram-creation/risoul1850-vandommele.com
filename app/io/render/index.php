@@ -1,23 +1,55 @@
 <?php
 
-// Get available weeks from database
-$weeks = db()->query("SELECT * FROM week WHERE week_start >= CURDATE() ORDER BY week_start ASC")->fetchAll();
+if ($_POST) {
+    $week_date   = trim($_POST['week_date'] ?? '');
+    $guest_name  = trim($_POST['guest_name'] ?? '');
+    $guest_email = trim($_POST['guest_email'] ?? '');
+    $guest_phone = trim($_POST['guest_phone'] ?? '');
 
-// Format weeks for display
-$formatted_weeks = [];
-foreach ($weeks as $week) {
-    $date = new DateTime($week['week_start']);
-    $formatted_weeks[] = [
-        'id' => $week['id'],
-        'date_iso' => $week['week_start'],
-        'date_display' => $date->format('j F Y'),
-        'price' => $week['price'],
-        'is_booked' => $week['confirmed'] !== null,
-        'guest_name' => $week['guest_name']
-    ];
+    $weeks = rangeOfWeeksFrom(new DateTime($week_date), 52, 850, 1370);
+
+    if ($week_date && $guest_name && $guest_email && isset($weeks[$week_date])) {
+        $pdo = db();
+
+        try {
+            $price = $weeks[$week_date]['price'] ?: throw new Exception('Semaine non trouvée', 400);
+            // 1) try to insert a fresh row
+            $insert = qp(
+                $pdo,
+                "INSERT INTO week (week_start, guest_name, guest_email, guest_phone, confirmed, booked_at, price)
+                 VALUES (?, ?, ?, ?, 1, NOW(), ?)",
+                [$week_date, $guest_name, $guest_email, $guest_phone ?: null, $price]
+            );
+
+            if ($insert->rowCount() === 1) {
+                http_out(201, '', ['Location' => '/book']);
+                exit;
+            }
+        } catch (PDOException $e) {
+            // 2) on duplicate key → update only if not confirmed
+            if ($e->getCode() === '23000') { // integrity constraint violation
+                $update = qp(
+                    $pdo,
+                    "UPDATE week
+                     SET guest_name = ?, guest_email = ?, guest_phone = ?, confirmed = 1, booked_at = NOW()
+                     WHERE week_start = ? AND confirmed <> 1 AND guest_name IS NULL AND guest_email IS NULL",
+                    [$guest_name, $guest_email, $guest_phone ?: null, $week_date]
+                );
+
+                if ($update->rowCount() === 1) {
+                    http_out(200, '', ['Location' => '/book']);
+                    exit;
+                } else {
+                    http_out(409, 'Semaine déjà réservée');
+                    exit;
+                }
+            }
+            throw $e; // rethrow if it’s another kind of SQL error
+        }
+    } else {
+        http_out(400, 'Paramètres invalides');
+    }
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -204,24 +236,132 @@ foreach ($weeks as $week) {
             <h2>La station</h2>
             <div id="map" aria-label="Carte des alentours de la résidence Pégase"></div>
         </section>
-        <!-- <section id="pricing">
+        <section id="pricing">
             <h2 class="pricing-title">Tarifs saisonniers</h2>
-            <div class="seasons"> -->
-        <!-- Carte Basse Saison -->
-        <!-- <article>
+            <div class="seasons">
+                <!-- Carte Basse Saison -->
+                <article>
                     <h3>TARIF BASSE SAISON</h3>
                     <div class="price">830</div>
-                </article> -->
-        <!-- Carte Haute Saison -->
-        <!-- <article>
+                </article>
+                <!-- Carte Haute Saison -->
+                <article>
                     <h3>TARIF HAUTE SAISON</h3>
                     <div class="price">1370</div>
                 </article>
 
             </div>
-        </section> -->
+        </section>
         <section id="reservation">
             <h2>Réservez votre séjour en quelques clics</h2>
+
+            <div id="weeks-container"></div>
+
+            <script>
+                async function loadWeeks() {
+                    // Get today's date in YYYY-MM-DD
+                    const today = new Date();
+                    const after = today.toISOString().slice(0, 10);
+
+                    // Fetch from your endpoint
+                    const resp = await fetch(`/weeks?after=${after}`);
+                    if (!resp.ok) {
+                        console.error("Erreur API", resp.status);
+                        return;
+                    }
+                    const weeksJson = await resp.json();
+                    renderWeeks(weeksJson);
+                }
+
+                function renderWeeks(json) {
+                    const container = document.getElementById("weeks-container");
+                    const template = document.getElementById("week-card-template");
+
+                    Object.entries(json).forEach(([weekStart, info], index) => {
+                        const clone = template.content.cloneNode(true);
+                        const article = clone.querySelector(".week-card");
+
+                        // Metadata
+                        article.dataset.date = weekStart;
+                        article.dataset.index = index;
+
+                        // Week date (localized FR)
+                        const date = new Date(weekStart);
+                        clone.querySelector(".week-date").textContent = 'Semaine du ' +
+                            date.toLocaleDateString("fr-FR", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric"
+                            });
+                        clone.querySelector("input[name=week_date]").value = date.toISOString().slice(0, 10);
+
+                        // Price
+                        clone.querySelector(".week-price").textContent =
+                            info.price ? new Intl.NumberFormat("fr-FR", {
+                                style: "currency",
+                                currency: "EUR"
+                            }).format(info.price) : "—";
+
+                        // Status + classes
+                        let statusText = "Disponible";
+                        let cssClass = "available";
+                        if (info.confirmed === 1) {
+                            statusText = "Réservé";
+                            cssClass = "reserved";
+                        } else if (info.confirmed === 0) {
+                            statusText = "En attente";
+                            cssClass = "pending";
+                        }
+                        clone.querySelector(".card-status").textContent = statusText;
+                        article.classList.add(cssClass);
+
+                        // Booking form only if available
+                        if (info.confirmed === null) {
+                            const form = clone.querySelector(".booking-form");
+                            form.querySelector("input[name=week_date]").value = date.toISOString().slice(0, 10);
+                        }
+
+                        // Color-code high/low season
+                        if (info.is_high_season) {
+                            article.classList.add("high-season");
+                        } else {
+                            article.classList.add("low-season");
+                        }
+
+                        container.appendChild(clone);
+                    });
+                }
+
+                // Auto-load on page start
+                loadWeeks();
+            </script>
+
+
+            <template id="week-card-template">
+                <article class="week-card">
+                    <header class="card-header">
+                        <strong class="week-date"></strong>
+                        <div class="week-price"></div>
+                    </header>
+                    <div class="card-status"></div>
+
+                    <div class="guest-badge" aria-label="Invité" hidden></div>
+
+                    <form class="booking-form" autocomplete="on" method="POST">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="week_date">
+                        <input type="text" name="guest_name" placeholder="Votre nom" required>
+                        <input type="email" name="guest_email" placeholder="Votre email" required>
+                        <input type="tel" name="guest_phone" placeholder="Téléphone (optionnel)">
+                        <button type="submit" class="book-now">Réserver</button>
+                    </form>
+
+                    <div class="form-msg" role="status" aria-live="polite"></div>
+                </article>
+            </template>
+
+
+
             <div class="reservation-container">
                 <header class="reservation-header">
                     <p class="section-subtitle">Veuillez noter que nos tarifs varient en fonction de la saison.
@@ -544,6 +684,8 @@ foreach ($weeks as $week) {
         </div>
     </footer>
 
+
+
     <!-- Modal pour les images -->
     <div id="imageModal" class="modal">
         <div class="modal-content">
@@ -588,7 +730,6 @@ foreach ($weeks as $week) {
 
         loadVideo();
     </script>
-
 
 </body>
 
