@@ -8,3 +8,5 @@ if ($_POST) {
     header('Location: /login?error=Invalid credentials');
     exit;
 }
+
+return [];

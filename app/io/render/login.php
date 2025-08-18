@@ -1,6 +1,3 @@
-<?php
-// app/io/render/login.php
-?>
 <!DOCTYPE html>
 <html>
 
