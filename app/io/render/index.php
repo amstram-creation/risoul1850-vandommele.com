@@ -200,7 +200,7 @@
             </div>
         </section>
         <section id="reservation">
-            <h2>Réservez votre séjour en quelques clics</h2>
+            <h2>Réservez votre séjour en 1 clic</h2>
             <?= $message ?>
             <div id="weeks-container"></div>
 
