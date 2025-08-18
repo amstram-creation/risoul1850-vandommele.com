@@ -83,7 +83,7 @@ function rangeOfWeeksFrom(DateTime $date, int $weeksAhead, $lowSeasonPrice = LOW
 
     // init a full year starting from the given date
     for ($i = 0, $looper = clone $date; $i < $weeksAhead; ++$i, $looper->modify('+1 week'))
-        $weeks[$looper->format('Y-m-d')] = ['is_high_season' => 0, 'confirmed' => null, 'price' => $lowSeasonPrice];
+        $weeks[$looper->format('Y-m-d')] = ['is_high_season' => 0, 'confirmed' => 0, 'price' => $lowSeasonPrice];
 
     // mark high-season weeks
     $highSeasonWeeks = array_merge(highSeasonWeeks((int)$date->format('Y')), highSeasonWeeks((int)$date->modify('+1 year')->format('Y')));
@@ -103,7 +103,7 @@ function rangeOfWeeksFrom(DateTime $date, int $weeksAhead, $lowSeasonPrice = LOW
     foreach ($rows as $r) {
         $weeks[$r['week_start']] = [
             'price'     => $r['price'] ? (float)$r['price'] : null,
-            'confirmed' => $r['confirmed'] ? (int)$r['confirmed'] : null, // NULL | 0 | 1
+            'confirmed' => $r['confirmed'] ?? null, // NULL | 0 | 1
         ];
     }
 
