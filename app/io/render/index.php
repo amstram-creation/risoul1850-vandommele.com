@@ -201,7 +201,7 @@
         </section>
         <section id="reservation">
             <h2>Réservez votre séjour en quelques clics</h2>
-
+            <?= $message ?>
             <div id="weeks-container"></div>
 
             <script>
@@ -261,12 +261,14 @@
 
                             });
                             clone.querySelector('button[type=submit]').disabled = true;
-                        } else if (info.confirmed === 0) {
+                            clone.querySelector(".week-price").textContent = statusText;
+
+                        } else if (info.confirmed === null) {
                             statusText = "En attente";
                             cssClass = "pending";
                         }
-                        clone.querySelector(".week-price").textContent = statusText;
                         article.classList.add(cssClass);
+                        clone.querySelector(".card-status").textContent = statusText;
 
                         // Booking form only if available
                         if (info.confirmed === null) {

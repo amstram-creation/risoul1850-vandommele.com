@@ -1,5 +1,4 @@
 <?php
-
 if ($_POST) {
     $week_date   = trim($_POST['week_date'] ?? '');
     $guest_name  = trim($_POST['guest_name'] ?? '');
@@ -20,11 +19,9 @@ if ($_POST) {
                  VALUES (?, ?, ?, ?, ?)",
                 [$week_date, $guest_name, $guest_email, $guest_phone ?: null, $price]
             );
-            
-            if ($insert->rowCount() === 1) {
-                http_out(201, '', ['Location' => '/book']);
-                exit;
-            }
+            if ($insert->rowCount() !== 1)
+                $response['message'] = '';
+
         } catch (PDOException $e) {
             // 2) on duplicate key → update only if not confirmed
             if ($e->getCode() === '23000') { // integrity constraint violation
@@ -35,20 +32,18 @@ if ($_POST) {
                      WHERE week_start = ? AND confirmed <> 1 AND guest_name IS NULL AND guest_email IS NULL",
                     [$guest_name, $guest_email, $guest_phone ?: null, $week_date]
                 );
-
-                if ($update->rowCount() === 1) {
-                    http_out(200, '', ['Location' => '/book']);
-                    exit;
-                } else {
-                    http_out(409, 'Semaine déjà réservée');
-                    exit;
-                }
+                if ($update->rowCount() !== 1)
+                    $response['message'] = 'Semaine déjà réservée';
             }
-            throw $e; // rethrow if it’s another kind of SQL error
+            else{
+                $response['message'] = 'Erreur lors de la réservation : ' . $e->getMessage();
+                $response['status'] = 500;
+            }
         }
     } else {
-        http_out(400, 'Paramètres invalides');
+        $response['message'] = 'Paramètres invalides';
+        $response['status'] = 400;
     }
 }
 
-return [];
+return $response;
