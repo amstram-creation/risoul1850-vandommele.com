@@ -14,6 +14,19 @@ CREATE TABLE `operator` (
   `revoked_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Indexes for table `operator`
+--
+ALTER TABLE `operator`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `operator_uk_username` (`username`),
+  ADD KEY `idx_operator_status` (`status`);
+
+--
+-- AUTO_INCREMENT for table `operator`
+--
+ALTER TABLE `operator`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -53,17 +66,6 @@ CREATE TABLE `week` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `operator`
---
-ALTER TABLE `operator`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `operator_uk_username` (`username`),
-  ADD KEY `idx_operator_status` (`status`);
 
 --
 -- Indexes for table `price`
@@ -77,12 +79,6 @@ ALTER TABLE `price`
 ALTER TABLE `week`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `week_start` (`week_start`);
-
---
--- AUTO_INCREMENT for table `operator`
---
-ALTER TABLE `operator`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `week`
