@@ -1,67 +1,88 @@
 <?php
-// app/io/route/admin/index.php
 
 $error = null;
+$success = null;
 $form_data = [];
 
 if ($_POST) {
     $action = $_POST['action'] ?? '';
-    $form_data = $_POST; // Save for repopulating forms
+    $form_data = $_POST;
 
     try {
         switch ($action) {
-            case 'update_price':
-                qp(
-                    db(),
-                    "UPDATE week SET price = ? WHERE id = ?",
-                    [(float)$_POST['price'], (int)$_POST['id']]
-                );
+            case 'update_global_prices':
+                qp(db(), "UPDATE price SET amount = ? WHERE is_high = 0", [(float)$_POST['low_price']]);
+                qp(db(), "UPDATE price SET amount = ? WHERE is_high = 1", [(float)$_POST['high_price']]);
+                $success = "Tarifs globaux mis à jour";
+                break;
+
+            case 'update_week_price':
+                qp(db(), "UPDATE week SET price = ? WHERE id = ?", [(float)$_POST['price'], (int)$_POST['id']]);
+                $success = "Prix de la semaine mis à jour";
+                break;
+
+            case 'confirm_booking':
+                qp(db(), "UPDATE week SET confirmed = 1 WHERE id = ?", [(int)$_POST['id']]);
+                $success = "Réservation confirmée";
                 break;
 
             case 'cancel_booking':
-                qp(
-                    db(),
-                    "UPDATE week SET confirmed = NULL, guest_name = NULL, guest_email = NULL, guest_phone = NULL, booked_at = NULL WHERE id = ?",
-                    [(int)$_POST['id']]
-                );
+                qp(db(), "UPDATE week SET confirmed = NULL, guest_name = NULL, guest_email = NULL, guest_phone = NULL, booked_at = NULL WHERE id = ?", [(int)$_POST['id']]);
+                $success = "Réservation annulée";
                 break;
 
             case 'add_week':
-                $res = qp(
+                qp(
                     db(),
                     "INSERT INTO week (week_start, price, is_high_season) VALUES (?, ?, ?)",
                     [$_POST['week_start'], (float)$_POST['price'], isset($_POST['is_high_season']) ? 1 : 0]
                 );
+                $success = "Semaine ajoutée";
                 break;
         }
 
-        // Success - redirect to clear POST
         header('Location: /admin');
         exit;
     } catch (PDOException $e) {
-        // Database error
         $error = match ($e->getCode()) {
-            '23000' => 'Cette semaine existe déjà dans la base de données.',
-            '22001' => 'Une des valeurs saisies est trop longue.',
-            '22003' => 'Le prix saisi est invalide.',
-            '01000' => 'Avertissement de la base de données : ' . $e->getMessage(),
-            default => 'Erreur de base de données : ' . $e->getMessage()
+            '23000' => 'Conflit de données (semaine existante?)',
+            default => 'Erreur base de données: ' . $e->getMessage()
         };
     }
 }
 
 try {
-    $weeks = db()->query("SELECT * FROM week ORDER BY week_start ASC")->fetchAll();
-    $stats = db()->query("SELECT 
-        COUNT(*) as total,
-        COUNT(confirmed) as booked,
-        SUM(price) as total_revenue,
-        SUM(CASE WHEN confirmed = 1 THEN price ELSE 0 END) as booked_revenue
-        FROM week")->fetch();
+    // Load global prices
+    $prices = db()->query("SELECT is_high, amount FROM price ORDER BY is_high")->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    // Load weeks with guest info
+    $weeks = db()->query("
+        SELECT w.*, 
+               CASE 
+                   WHEN w.confirmed = 1 THEN 'confirmed'
+                   WHEN w.confirmed = 0 THEN 'pending' 
+                   WHEN w.guest_name IS NOT NULL THEN 'pending'
+                   ELSE 'available' 
+               END as status
+        FROM week w 
+        ORDER BY w.week_start ASC
+    ")->fetchAll();
+
+    // Stats
+    $stats = db()->query("
+        SELECT 
+            COUNT(*) as total,
+            COUNT(CASE WHEN confirmed = 1 THEN 1 END) as confirmed,
+            COUNT(CASE WHEN guest_name IS NOT NULL AND confirmed != 1 THEN 1 END) as pending,
+            SUM(CASE WHEN confirmed = 1 THEN price ELSE 0 END) as confirmed_revenue,
+            SUM(price) as total_revenue
+        FROM week
+    ")->fetch();
 } catch (PDOException $e) {
-    $error = 'Impossible de charger les données : ' . $e->getMessage();
+    $error = 'Impossible de charger les données: ' . $e->getMessage();
     $weeks = [];
-    $stats = ['total' => 0, 'booked' => 0, 'total_revenue' => 0, 'booked_revenue' => 0];
+    $prices = [0 => LOW_PRICE, 1 => HIGH_PRICE];
+    $stats = ['total' => 0, 'confirmed' => 0, 'pending' => 0, 'confirmed_revenue' => 0, 'total_revenue' => 0];
 }
 
-return compact('weeks', 'stats', 'error', 'form_data');
+return compact('weeks', 'prices', 'stats', 'error', 'success', 'form_data');

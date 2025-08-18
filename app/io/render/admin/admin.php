@@ -1,6 +1,3 @@
-<?php
-// app/io/render/admin/index.php
-?>
 <!DOCTYPE html>
 <html>
 
@@ -19,20 +16,51 @@
     </header>
 
     <main>
-
         <?php if ($error): ?>
-            <div class="alert">
-                <strong>Erreur :</strong> <?= htmlspecialchars($error) ?>
-            </div>
+            <div class="alert error"><?= htmlspecialchars($error) ?></div>
         <?php endif ?>
 
+        <?php if ($success): ?>
+            <div class="alert success"><?= htmlspecialchars($success) ?></div>
+        <?php endif ?>
+
+        <!-- Global Pricing -->
+        <section class="pricing-section">
+            <h2>Tarifs Globaux</h2>
+            <form method="post" class="pricing-form">
+                <input type="hidden" name="action" value="update_global_prices">
+                <div class="price-inputs">
+                    <label>
+                        Basse saison
+                        <input type="number" name="low_price" value="<?= $prices[0] ?>" required>€
+                    </label>
+                    <label>
+                        Haute saison
+                        <input type="number" name="high_price" value="<?= $prices[1] ?>" required>€
+                    </label>
+                    <button type="submit" class="btn-primary">Mettre à jour</button>
+                </div>
+                <?= csrf_field() ?>
+            </form>
+        </section>
+
+        <!-- Stats -->
         <div class="stats">
-            <div class="stat-card"><strong><?= $stats['total'] ?></strong><br>Semaines totales</div>
-            <div class="stat-card"><strong><?= $stats['booked'] ?></strong><br>Réservées</div>
-            <div class="stat-card"><strong><?= number_format($stats['booked_revenue']) ?>€</strong><br>Chiffre d'affaires</div>
-            <div class="stat-card"><strong><?= number_format($stats['total_revenue']) ?>€</strong><br>Potentiel</div>
+            <div class="stat-card">
+                <strong><?= $stats['total'] ?></strong><br>Total semaines
+            </div>
+            <div class="stat-card">
+                <strong><?= $stats['confirmed'] ?></strong><br>Confirmées
+            </div>
+            <div class="stat-card">
+                <strong><?= $stats['pending'] ?></strong><br>En attente
+            </div>
+            <div class="stat-card">
+                <strong><?= number_format($stats['confirmed_revenue']) ?>€</strong><br>CA confirmé
+            </div>
         </div>
 
+        <!-- Weeks Table -->
         <div class="table-container">
             <table>
                 <thead>
@@ -46,42 +74,52 @@
                 </thead>
                 <tbody>
                     <?php foreach ($weeks as $week): ?>
-                        <tr>
-                            <td><?= strftime('%e %b %Y', strtotime($week['week_start'])) ?></td>
+                        <tr class="week-<?= $week['status'] ?>">
+                            <td><?= date('d M Y', strtotime($week['week_start'])) ?></td>
                             <td>
                                 <form method="post" class="inline-form">
-                                    <input type="hidden" name="action" value="update_price">
+                                    <input type="hidden" name="action" value="update_week_price">
                                     <input type="hidden" name="id" value="<?= $week['id'] ?>">
-                                    <input type="number" name="price" class="price-input" value="<?=
-                                                                                                    ($form_data['action'] ?? '') === 'update_price' && ($form_data['id'] ?? '') == $week['id']
-                                                                                                        ? htmlspecialchars($form_data['price'] ?? $week['price'])
-                                                                                                        : $week['price']
-                                                                                                    ?>">
+                                    <input type="number" name="price" class="price-input" value="<?= $week['price'] ?>">
                                     <button class="btn-save">✓</button>
                                     <?= csrf_field() ?>
                                 </form>
                             </td>
                             <td>
-                                <?php if ($week['confirmed']): ?>
-                                    <span class="badge reserved">RÉSERVÉ</span>
-                                <?php else: ?>
-                                    <span class="badge available">DISPONIBLE</span>
-                                <?php endif ?>
+                                <span class="badge <?= $week['status'] ?>">
+                                    <?= match ($week['status']) {
+                                        'confirmed' => 'CONFIRMÉ',
+                                        'pending' => 'EN ATTENTE',
+                                        default => 'DISPONIBLE'
+                                    } ?>
+                                </span>
                             </td>
                             <td>
                                 <?php if ($week['guest_name']): ?>
                                     <strong><?= htmlspecialchars($week['guest_name']) ?></strong><br>
                                     <small><?= htmlspecialchars($week['guest_email']) ?></small>
+                                    <?php if ($week['guest_phone']): ?>
+                                        <br><small><?= htmlspecialchars($week['guest_phone']) ?></small>
+                                    <?php endif ?>
                                 <?php else: ?>
                                     <em class="text-muted">Aucune réservation</em>
                                 <?php endif ?>
                             </td>
                             <td>
-                                <?php if ($week['confirmed']): ?>
+                                <?php if ($week['guest_name'] && $week['confirmed'] != 1): ?>
+                                    <form method="post" style="display:inline">
+                                        <input type="hidden" name="action" value="confirm_booking">
+                                        <input type="hidden" name="id" value="<?= $week['id'] ?>">
+                                        <button class="btn-confirm" onclick="return confirm('Confirmer la réservation?')">Confirmer</button>
+                                        <?= csrf_field() ?>
+                                    </form>
+                                <?php endif ?>
+
+                                <?php if ($week['confirmed'] == 1): ?>
                                     <form method="post" style="display:inline">
                                         <input type="hidden" name="action" value="cancel_booking">
                                         <input type="hidden" name="id" value="<?= $week['id'] ?>">
-                                        <button onclick="return confirm('Annuler la réservation ?')" class="btn-cancel">Annuler</button>
+                                        <button class="btn-cancel" onclick="return confirm('Annuler la réservation?')">Annuler</button>
                                         <?= csrf_field() ?>
                                     </form>
                                 <?php endif ?>
@@ -92,8 +130,9 @@
             </table>
         </div>
 
+        <!-- Add Week -->
         <details <?= ($form_data['action'] ?? '') === 'add_week' ? 'open' : '' ?>>
-            <summary>Ajouter une nouvelle semaine</summary>
+            <summary>Ajouter une semaine</summary>
             <form method="post" class="add-week">
                 <div>
                     <label>Date<br>
