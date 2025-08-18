@@ -1,79 +1,91 @@
-DROP TABLE IF EXISTS week;
+-- Table structure for table `operator`
+--
 
-CREATE TABLE week (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE `operator` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `last_login_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `enabled_at` timestamp NULL DEFAULT NULL,
+  `revoked_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    week_start DATE NOT NULL UNIQUE,
 
-    -- pricing & flags
-    price DECIMAL(8,2) NULL,
+-- --------------------------------------------------------
 
-    -- booking status
-    booked_at TIMESTAMP NULL,   
-    confirmed TINYINT NULL,   -- NULL=available, 0=pending, 1=confirmed
-
-    -- guest fields (nullable when not booked)
-    guest_name  VARCHAR(255) NULL,
-    guest_email VARCHAR(255) NULL,
-    guest_phone VARCHAR(30)  NULL,
-
-    -- Data consistency:
-    --  - available (confirmed IS NULL): no guest data, no booked_at
-    --  - pending/confirmed (0 or 1): require guest_name and booked_at
-    CONSTRAINT chk_week_consistency
-        CHECK (
-          (confirmed IS NULL
-            AND guest_name  IS NULL
-            AND guest_email IS NULL
-            AND guest_phone IS NULL
-            AND booked_at   IS NULL)
-          OR
-          (confirmed IN (0,1)
-            AND guest_name IS NOT NULL
-            AND booked_at  IS NOT NULL)
-        )
-);
+--
+-- Table structure for table `price`
+--
 
 CREATE TABLE `price` (
   `is_high` tinyint(1) NOT NULL,
-  `amount` decimal(8,2) NOT NULL,
-  PRIMARY KEY (`is_high`)
-);
+  `amount` decimal(8,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `price`
+--
 
 INSERT INTO `price` (`is_high`, `amount`) VALUES
 (0, 850.00),
 (1, 1370.00);
 
-CREATE TABLE `high_season` (
-  `date_start` date NOT NULL,
-  `date_stop` date NOT NULL,
-  PRIMARY KEY (`date_start`)
-);
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `week`
+--
 
-WITH RECURSIVE week_dates AS (
-  SELECT DATE('2024-01-01') as week_start, 0 as week_num  -- replace date parameter
-  UNION ALL
-  SELECT DATE_ADD(week_start, INTERVAL 7 DAY), week_num + 1
-  FROM week_dates WHERE week_num < 7
-)
-SELECT 
-  wd.week_start,
-  w.id,
-  COALESCE(
-    w.price,
-    (SELECT amount FROM price WHERE is_high = 
-      CASE WHEN EXISTS(
-        SELECT 1 FROM high_season 
-        WHERE wd.week_start BETWEEN date_start AND date_stop
-      ) THEN 1 ELSE 0 END)
-  ) as price,
-  w.confirmed,
-  w.guest_name,
-  w.guest_email, 
-  w.guest_phone,
-  w.booked_at
-FROM week_dates wd
-LEFT JOIN week w ON wd.week_start = w.week_start
-ORDER BY wd.week_start;
+CREATE TABLE `week` (
+  `id` int(11) NOT NULL,
+  `week_start` date NOT NULL,
+  `price` decimal(8,2) NOT NULL,
+  `is_high_season` tinyint(1) NOT NULL DEFAULT 0,
+  `confirmed` tinyint(4) DEFAULT NULL,
+  `guest_name` varchar(255) DEFAULT NULL,
+  `guest_email` varchar(255) DEFAULT NULL,
+  `guest_phone` varchar(30) DEFAULT NULL,
+  `booked_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `operator`
+--
+ALTER TABLE `operator`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `operator_uk_username` (`username`),
+  ADD KEY `idx_operator_status` (`status`);
+
+--
+-- Indexes for table `price`
+--
+ALTER TABLE `price`
+  ADD PRIMARY KEY (`is_high`);
+
+--
+-- Indexes for table `week`
+--
+ALTER TABLE `week`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `week_start` (`week_start`);
+
+--
+-- AUTO_INCREMENT for table `operator`
+--
+ALTER TABLE `operator`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `week`
+--
+ALTER TABLE `week`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
