@@ -56,32 +56,14 @@ try {
     $prices = db()->query("SELECT is_high, amount FROM price ORDER BY is_high")->fetchAll(PDO::FETCH_KEY_PAIR);
 
     // Load weeks with guest info
-    $weeks = db()->query("
-        SELECT w.*, 
-               CASE 
-                   WHEN w.confirmed = 1 THEN 'confirmed'
-                   WHEN w.confirmed = 0 THEN 'pending' 
-                   WHEN w.guest_name IS NOT NULL THEN 'pending'
-                   ELSE 'available' 
-               END as status
-        FROM week w 
-        ORDER BY w.week_start ASC
-    ")->fetchAll();
+    $weeks = db()->query("SELECT * FROM week_with_status")->fetchAll();
 
     // Stats
-    $stats = db()->query("
-        SELECT 
-            COUNT(*) as total,
-            COUNT(CASE WHEN confirmed = 1 THEN 1 END) as confirmed,
-            COUNT(CASE WHEN guest_name IS NOT NULL AND confirmed != 1 THEN 1 END) as pending,
-            SUM(CASE WHEN confirmed = 1 THEN price ELSE 0 END) as confirmed_revenue,
-            SUM(price) as total_revenue
-        FROM week
-    ")->fetch();
+    $stats = db()->query("SELECT * FROM week_summary")->fetch();
 } catch (PDOException $e) {
     $error = 'Impossible de charger les données: ' . $e->getMessage();
     $weeks = [];
-    $prices = [0 => LOW_PRICE, 1 => HIGH_PRICE];
+    $prices = db()->query("SELECT amount FROM `price` ORDER BY is_high ASC")->fetchAll(PDO::FETCH_COLUMN); // [0 => $price_low, 1 => $price_high];
     $stats = ['total' => 0, 'confirmed' => 0, 'pending' => 0, 'confirmed_revenue' => 0, 'total_revenue' => 0];
 }
 
