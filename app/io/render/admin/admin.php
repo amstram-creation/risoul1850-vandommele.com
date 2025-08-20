@@ -12,6 +12,10 @@
 
     <header>
         <h1>Administration Réservations</h1>
+        <nav>
+            <a href="/admin">Accueil</a>
+            <a href="/admin/seasons">Saisons</a>
+        </nav>
         <a href="/logout">Déconnexion</a>
     </header>
 
