@@ -59,36 +59,16 @@ try {
     $date = new DateTime();
     if ($date->format('N') != 1) $date->modify('next monday');
 
-    $generated_weeks = rangeOfWeeksFrom($date, 52, $price_low, $price_high);
+    // $generated_weeks = rangeOfWeeksFrom($date, 52, $price_low, $price_high);
 
     // Get actual bookings from database
-    $db_weeks = [];
-    $stmt = qp(db(), "SELECT week_start, price, confirmed, guest_name, guest_email, guest_phone FROM week");
+    $weeks = [];
+    $stmt = db()->query("SELECT week_start, price, confirmed, guest_name, guest_email, guest_phone FROM week");
     if ($stmt) {
         while ($row = $stmt->fetch()) {
-            $db_weeks[$row['week_start']] = $row;
+            $weeks[$row['week_start']] = $row;
         }
     }
-
-    // Merge generated weeks with database data
-    foreach ($generated_weeks as $week_start => $generated) {
-        $db_data = $db_weeks[$week_start] ?? [];
-        $weeks[] = [
-            'week_start' => $week_start,
-            'price' => $db_data['price'] ?? $generated['price'],
-            'confirmed' => $db_data['confirmed'] ?? null,
-            'guest_name' => $db_data['guest_name'] ?? null,
-            'guest_email' => $db_data['guest_email'] ?? null,
-            'guest_phone' => $db_data['guest_phone'] ?? null,
-            'is_high_season' => $generated['is_high_season'] ?? 0,
-            'status' => match ($db_data['confirmed'] ?? null) {
-                1 => 'confirmed',
-                0 => 'pending',
-                default => 'available'
-            }
-        ];
-    }
-
     // Get stats
     $stats_row = db()->query("SELECT * FROM week_summary")->fetch();
     if ($stats_row) {
