@@ -3,6 +3,10 @@
 $error = null;
 $success = null;
 $form_data = [];
+$weeks = [];
+$price_low = 0;
+$price_high = 0;
+$stats = ['total' => 0, 'confirmed' => 0, 'pending' => 0, 'confirmed_revenue' => 0];
 
 if ($_POST) {
     $action = $_POST['action'] ?? '';
@@ -13,58 +17,90 @@ if ($_POST) {
             case 'update_global_prices':
                 qp(db(), "UPDATE price SET amount = ? WHERE is_high = 0", [(float)$_POST['low_price']]);
                 qp(db(), "UPDATE price SET amount = ? WHERE is_high = 1", [(float)$_POST['high_price']]);
-                $success = "Tarifs globaux mis à jour";
+                $success = "Tarifs mis à jour";
                 break;
 
-            case 'update_week_price':
-                qp(db(), "UPDATE week SET price = ? WHERE id = ?", [(float)$_POST['price'], (int)$_POST['id']]);
-                $success = "Prix de la semaine mis à jour";
+            case 'update_week':
+                $week_start = $_POST['week_start'];
+                $price = (float)$_POST['price'];
+
+                qp(db(), "INSERT INTO week (week_start, price) VALUES (?, ?) 
+                          ON DUPLICATE KEY UPDATE price = VALUES(price)", [$week_start, $price]);
+                $success = "Semaine mise à jour";
                 break;
 
             case 'confirm_booking':
-                qp(db(), "UPDATE week SET confirmed = 1 WHERE id = ?", [(int)$_POST['id']]);
+                qp(db(), "UPDATE week SET confirmed = 1 WHERE week_start = ?", [$_POST['week_start']]);
                 $success = "Réservation confirmée";
                 break;
 
             case 'cancel_booking':
-                qp(db(), "UPDATE week SET confirmed = NULL, guest_name = NULL, guest_email = NULL, guest_phone = NULL, booked_at = NULL WHERE id = ?", [(int)$_POST['id']]);
+                qp(db(), "UPDATE week SET confirmed = NULL, guest_name = NULL, guest_email = NULL, 
+                          guest_phone = NULL, booked_at = NULL WHERE week_start = ?", [$_POST['week_start']]);
                 $success = "Réservation annulée";
-                break;
-
-            case 'add_week':
-                qp(
-                    db(),
-                    "INSERT INTO week (week_start, price, is_high_season) VALUES (?, ?, ?)",
-                    [$_POST['week_start'], (float)$_POST['price'], isset($_POST['is_high_season']) ? 1 : 0]
-                );
-                $success = "Semaine ajoutée";
                 break;
         }
 
         header('Location: /admin');
         exit;
     } catch (PDOException $e) {
-        $error = match ($e->getCode()) {
-            '23000' => 'Conflit de données (semaine existante?)',
-            default => 'Erreur base de données: ' . $e->getMessage()
-        };
+        $error = 'Erreur: ' . $e->getMessage();
     }
 }
 
 try {
-    // Load global prices
-    $prices = db()->query("SELECT is_high, amount FROM price ORDER BY is_high")->fetchAll(PDO::FETCH_KEY_PAIR);
+    // Get prices
+    $prices = db()->query("SELECT amount FROM price ORDER BY is_high")->fetchAll(PDO::FETCH_COLUMN);
+    if (count($prices) >= 2) {
+        [$price_low, $price_high] = $prices;
+    }
 
-    // Load weeks with guest info
-    $weeks = db()->query("SELECT * FROM week_with_status")->fetchAll();
+    // Generate weeks starting from today
+    $date = new DateTime();
+    if ($date->format('N') != 1) $date->modify('next monday');
 
-    // Stats
-    $stats = db()->query("SELECT * FROM week_summary")->fetch();
-} catch (PDOException $e) {
-    $error = 'Impossible de charger les données: ' . $e->getMessage();
+    $generated_weeks = rangeOfWeeksFrom($date, 52, $price_low, $price_high);
+
+    // Get actual bookings from database
+    $db_weeks = [];
+    $stmt = qp(db(), "SELECT week_start, price, confirmed, guest_name, guest_email, guest_phone FROM week");
+    if ($stmt) {
+        while ($row = $stmt->fetch()) {
+            $db_weeks[$row['week_start']] = $row;
+        }
+    }
+
+    // Merge generated weeks with database data
+    foreach ($generated_weeks as $week_start => $generated) {
+        $db_data = $db_weeks[$week_start] ?? [];
+        $weeks[] = [
+            'week_start' => $week_start,
+            'price' => $db_data['price'] ?? $generated['price'],
+            'confirmed' => $db_data['confirmed'] ?? null,
+            'guest_name' => $db_data['guest_name'] ?? null,
+            'guest_email' => $db_data['guest_email'] ?? null,
+            'guest_phone' => $db_data['guest_phone'] ?? null,
+            'is_high_season' => $generated['is_high_season'] ?? 0,
+            'status' => match ($db_data['confirmed'] ?? null) {
+                1 => 'confirmed',
+                0 => 'pending',
+                default => 'available'
+            }
+        ];
+    }
+
+    // Get stats
+    $stats_row = db()->query("SELECT * FROM week_summary")->fetch();
+    if ($stats_row) {
+        $stats = $stats_row;
+    }
+} catch (Exception $e) {
+    $error = 'Erreur de chargement: ' . $e->getMessage();
+    // Ensure defaults are set
     $weeks = [];
-    $prices = db()->query("SELECT amount FROM `price` ORDER BY is_high ASC")->fetchAll(PDO::FETCH_COLUMN); // [0 => $price_low, 1 => $price_high];
-    $stats = ['total' => 0, 'confirmed' => 0, 'pending' => 0, 'confirmed_revenue' => 0, 'total_revenue' => 0];
+    $price_low = $price_high = 0;
 }
 
-return compact('weeks', 'prices', 'stats', 'error', 'success', 'form_data');
+$weeks ??= [];
+
+return compact('weeks', 'price_low', 'price_high', 'stats', 'error', 'success', 'form_data');
