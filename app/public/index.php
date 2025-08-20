@@ -8,9 +8,6 @@ require 'add/badhat/core.php';
 require 'add/badhat/db.php';
 require 'add/badhat/auth.php';
 
-const HIGH_PRICE = 1370;
-const LOW_PRICE  = 850;
-
 try {
     auth(AUTH_SETUP, 'username', qp(db(), "SELECT password_hash FROM operator WHERE username = ? AND status = 1", null));
 
@@ -44,7 +41,7 @@ try {
     die;
 }
 
-function rangeOfWeeksFrom(DateTime $date, int $weeksAhead, $lowSeasonPrice = LOW_PRICE, $highSeasonPrice = HIGH_PRICE): array
+function rangeOfWeeksFrom(DateTime $date, int $weeksAhead, int $lowSeasonPrice, int $highSeasonPrice): array
 {
     $weeks = [];
     $after = $date->format('Y-m-d');

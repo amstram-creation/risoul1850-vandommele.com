@@ -1,15 +1,40 @@
 <?php
+
+[$price_low, $price_high] = db()->query("SELECT amount FROM `price` ORDER BY is_high ASC")->fetchAll(PDO::FETCH_COLUMN);
+
+if (isset($_GET['after'])) {
+    $date = new DateTime($_GET['after']);
+
+    if ($date->format('N') != 1)
+        $date->modify('next monday');
+
+    $weeks = rangeOfWeeksFrom($date, 52, $price_low, $price_high);
+
+    http_out(
+        200,
+        json_encode($weeks, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+        ['Content-Type' => 'application/json; charset=utf-8']
+    );
+    exit;
+}
+
+
+$response = [
+    'price_low' => $price_low,
+    'price_high' => $price_high
+];
+
 if ($_POST) {
     $week_date   = trim($_POST['week_date'] ?? '');
     $guest_name  = trim($_POST['guest_name'] ?? '');
     $guest_email = trim($_POST['guest_email'] ?? '');
     $guest_phone = trim($_POST['guest_phone'] ?? '');
 
-    $weeks = rangeOfWeeksFrom(new DateTime($week_date), 52, LOW_PRICE, HIGH_PRICE);
-    
+    $weeks = rangeOfWeeksFrom(new DateTime($week_date), 52, $price_low, $price_high);
+
     if ($week_date && $guest_name && $guest_email && isset($weeks[$week_date])) {
         $pdo = db();
-        
+
         try {
             $price = $weeks[$week_date]['price'] ?: throw new Exception('Semaine non trouvée', 400);
             // 1) try to insert a fresh row
@@ -21,7 +46,6 @@ if ($_POST) {
             );
             if ($insert->rowCount() !== 1)
                 $response['message'] = '';
-
         } catch (PDOException $e) {
             // 2) on duplicate key → update only if not confirmed
             if ($e->getCode() === '23000') { // integrity constraint violation
@@ -34,8 +58,7 @@ if ($_POST) {
                 );
                 if ($update->rowCount() !== 1)
                     $response['message'] = 'Semaine déjà réservée';
-            }
-            else{
+            } else {
                 $response['message'] = 'Erreur lors de la réservation : ' . $e->getMessage();
                 $response['status'] = 500;
             }

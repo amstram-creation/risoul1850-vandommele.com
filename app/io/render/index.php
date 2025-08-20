@@ -189,12 +189,12 @@
                 <!-- Carte Basse Saison -->
                 <article>
                     <h3>TARIF BASSE SAISON</h3>
-                    <div class="price"><?= LOW_PRICE ?></div>
+                    <div class="price"><?= $price_low ?></div>
                 </article>
                 <!-- Carte Haute Saison -->
                 <article>
                     <h3>TARIF HAUTE SAISON</h3>
-                    <div class="price"><?= HIGH_PRICE ?></div>
+                    <div class="price"><?= $price_high ?></div>
                 </article>
 
             </div>
@@ -211,7 +211,7 @@
                     const after = today.toISOString().slice(0, 10);
 
                     // Fetch from your endpoint
-                    const resp = await fetch(`/weeks?after=${after}`);
+                    const resp = await fetch(`/?after=${after}`);
                     if (!resp.ok) {
                         console.error("Erreur API", resp.status);
                         return;
